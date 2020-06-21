@@ -2,108 +2,182 @@
 
 namespace App\Http\Controllers;
 
-use Auth;
-use App\Event;
-use App\Task;
-use App\Debt;
-use Validator;
-use App\Contact;
-use App\Reminder;
-use Carbon\Carbon;
-use App\Http\Requests;
+use App\Models\User\User;
 use App\Helpers\DateHelper;
+use App\Models\Contact\Debt;
 use Illuminate\Http\Request;
+use App\Helpers\AccountHelper;
+use function Safe\json_encode;
+use App\Helpers\InstanceHelper;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Auth;
+use App\Http\Resources\Debt\Debt as DebtResource;
 
 class DashboardController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\View\View|\Illuminate\Contracts\View\Factory
      */
     public function index()
     {
-        $account = Auth::user()->account;
+        $account = auth()->user()->account()
+            ->withCount(
+                'contacts', 'reminders', 'notes', 'activities', 'gifts', 'tasks'
+            )->with('debts.contact')
+            ->first();
 
-        $lastUpdatedContacts = $account->contacts()->limit(10)->get();
+        $numberOfContacts = $account->contacts()
+                                    ->real()
+                                    ->active()
+                                    ->count();
 
-        // Latest statistics
-        if ($account->contacts()->count() === 0) {
+        if ($numberOfContacts === 0) {
             return view('dashboard.blank');
         }
 
-        $number_of_contacts = $account->contacts()->count();
-        $number_of_reminders = $account->reminders()->count();
-        $number_of_notes = $account->notes()->count();
-        $number_of_activities = $account->activities()->count();
-        $number_of_gifts = $account->gifts()->count();
-        $number_of_tasks = $account->tasks()->count();
-        $number_of_kids = $account->kids()->count();
+        // Fetch last updated contacts
+        $lastUpdatedContactsCollection = collect([]);
+        $lastUpdatedContacts = $account->contacts()
+            ->real()
+            ->active()
+            ->alive()
+            ->latest('last_consulted_at')
+            ->limit(10)
+            ->get();
+        foreach ($lastUpdatedContacts as $contact) {
+            $data = [
+                'id' => $contact->hashID(),
+                'has_avatar' => $contact->has_avatar,
+                'avatar_url' => $contact->getAvatarURL(),
+                'initials' => $contact->getInitials(),
+                'default_avatar_color' => $contact->default_avatar_color,
+                'complete_name' => $contact->name,
+            ];
+            $lastUpdatedContactsCollection->push(json_encode($data));
+        }
 
-        $debt = $account->debt->where('status', 'inprogress');
+        $debts = $account->debts()->inProgress();
 
-        $debt_due = $debt->where('in_debt', 'yes')
+        $debt_due = $debts->due()->get()
             ->reduce(function ($totalDueDebt, Debt $debt) {
                 return $totalDueDebt + $debt->amount;
             }, 0);
 
-        $debt_owed = $debt->where('in_debt', 'no')
+        $debt_owed = $debts->owed()->get()
             ->reduce(function ($totalOwedDebt, Debt $debt) {
                 return $totalOwedDebt + $debt->amount;
             }, 0);
 
-        // List of events
-        $events = $account->events()->with('contact.significantOthers', 'contact.kids')->limit(30)->get()
-            ->reject(function (Event $event) {
-                return $event->contact === null;
-            })
-            ->map(function (Event $event) use ($account) {
+        // get last 3 changelog entries
+        $changelogs = InstanceHelper::getChangelogEntries(3);
 
-                if ($event->object_type === 'significantother') {
-                    $object = $event->contact->significantOthers->where('id', $event->object_id)->first();
-                } elseif ($event->object_type === 'kid') {
-                    $object = $event->contact->kids->where('id', $event->object_id)->first();
-                }
-
-                return [
-                    'id' => $event->id,
-                    'date' => DateHelper::createDateFromFormat($event->created_at, Auth::user()->timezone),
-                    'object' => $object ?? null,
-                    'object_type' => $event->object_type,
-                    'object_id' => $event->object_id,
-                    'contact_id' => $event->contact->id,
-                    'contact_complete_name' => $event->contact->getCompleteName(),
-                    'nature_of_operation' => $event->nature_of_operation,
-                ];
-            });
-
-        // List of upcoming reminders
-        $upcomingReminders = $account->reminders()
-            ->where('next_expected_date', '>', Carbon::now())
-            ->orderBy('next_expected_date', 'asc')
-            ->limit(10)
-            ->get();
-
-        // Active tasks
-        $tasks = $account->tasks->where('status', 'inprogress');
+        // Load the reminderOutboxes for the upcoming three months
+        $reminderOutboxes = [
+            0 => AccountHelper::getUpcomingRemindersForMonth(auth()->user()->account, 0),
+            1 => AccountHelper::getUpcomingRemindersForMonth(auth()->user()->account, 1),
+            2 => AccountHelper::getUpcomingRemindersForMonth(auth()->user()->account, 2),
+        ];
 
         $data = [
-            'events' => $events,
-            'lastUpdatedContacts' => $lastUpdatedContacts,
-            'upcomingReminders' => $upcomingReminders,
-            'number_of_contacts' => $number_of_contacts,
-            'number_of_reminders' => $number_of_reminders,
-            'number_of_notes' => $number_of_notes,
-            'number_of_activities' => $number_of_activities,
-            'number_of_gifts' => $number_of_gifts,
-            'number_of_tasks' => $number_of_tasks,
-            'number_of_kids' => $number_of_kids,
+            'lastUpdatedContacts' => $lastUpdatedContactsCollection,
+            'number_of_contacts' => $numberOfContacts,
+            'number_of_reminders' => $account->reminders_count,
+            'number_of_notes' => $account->notes_count,
+            'number_of_activities' => $account->activities_count,
+            'number_of_gifts' => $account->gifts_count,
+            'number_of_tasks' => $account->tasks_count,
             'debt_due' => $debt_due,
             'debt_owed' => $debt_owed,
-            'tasks' => $tasks,
-            'debts' => $debt,
+            'debts' => $debts,
+            'user' => auth()->user(),
+            'changelogs' => $changelogs,
+            'reminderOutboxes' => $reminderOutboxes,
         ];
 
         return view('dashboard.index', $data);
+    }
+
+    /**
+     * Get calls for the dashboard.
+     * @return Collection
+     */
+    public function calls()
+    {
+        $callsCollection = collect([]);
+        $calls = auth()->user()->account->calls()
+            ->get()
+            ->reject(function ($call) {
+                return is_null($call->contact);
+            })
+            ->take(15);
+
+        foreach ($calls as $call) {
+            $data = [
+                'id' => $call->id,
+                'called_at' => DateHelper::getShortDate($call->called_at),
+                'name' => $call->contact->getIncompleteName(),
+                'contact_id' => $call->contact->hashID(),
+            ];
+            $callsCollection->push($data);
+        }
+
+        return $callsCollection;
+    }
+
+    /**
+     * Get notes for the dashboard.
+     * @return Collection
+     */
+    public function notes()
+    {
+        $notesCollection = collect([]);
+        $notes = auth()->user()->account->notes()->favorited()->get();
+
+        foreach ($notes as $note) {
+            $data = [
+                'id' => $note->id,
+                'body' => $note->body,
+                'created_at' => DateHelper::getShortDate($note->created_at),
+                'name' => $note->contact->getIncompleteName(),
+                'contact' => [
+                    'id' => $note->contact->hashID(),
+                    'has_avatar' => $note->contact->has_avatar,
+                    'avatar_url' => $note->contact->getAvatarURL(),
+                    'initials' => $note->contact->getInitials(),
+                    'default_avatar_color' => $note->contact->default_avatar_color,
+                    'complete_name' => $note->contact->name,
+                ],
+            ];
+            $notesCollection->push($data);
+        }
+
+        return $notesCollection;
+    }
+
+    /**
+     * Get debts for the dashboard.
+     * @return Collection
+     */
+    public function debts()
+    {
+        $debtsCollection = collect([]);
+        $debts = auth()->user()->account->debts()->get();
+
+        foreach ($debts as $debt) {
+            $debtsCollection->push(new DebtResource($debt));
+        }
+
+        return $debtsCollection;
+    }
+
+    /**
+     * Save the current active tab to the User table.
+     */
+    public function setTab(Request $request)
+    {
+        auth()->user()->dashboard_active_tab = $request->input('tab');
+        auth()->user()->save();
     }
 }

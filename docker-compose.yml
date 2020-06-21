@@ -1,22 +1,31 @@
-version: "2"
+version: "3.4"
+
 services:
   monicahq:
     build: .
     image: monicahq/monicahq
-    links:
+    depends_on:
       - mysql
     ports:
       - 80:80
     env_file: .env
     volumes:
-      - ./persist/storage/app/public:/var/www/monica/storage/app/public
+      - data:/var/www/monica/storage
+    restart: always
 
   mysql:
-    image: mysql
+    image: mysql:5.7
     environment:
       - MYSQL_ROOT_PASSWORD=sekret_root_password
       - MYSQL_DATABASE=monica
       - MYSQL_USER=homestead
       - MYSQL_PASSWORD=secret
     volumes:
-      - ./persist/mysql:/var/lib/mysql
+      - mysql:/var/lib/mysql
+    restart: always
+
+volumes:
+  data:
+    name: data
+  mysql:
+    name: mysql

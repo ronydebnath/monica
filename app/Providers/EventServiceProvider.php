@@ -2,7 +2,7 @@
 
 namespace App\Providers;
 
-use Illuminate\Contracts\Events\Dispatcher as DispatcherContract;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 
 class EventServiceProvider extends ServiceProvider
@@ -13,34 +13,17 @@ class EventServiceProvider extends ServiceProvider
      * @var array
      */
     protected $listen = [
-        'App\Events\Reminder\ReminderCreated' => [
-            'App\Listeners\Reminder\LogReminderCreatedEvent',
-            'App\Listeners\Reminder\IncrementNumberOfReminders',
-        ],
-        'App\Events\Reminder\ReminderDeleted' => [
-            'App\Listeners\Reminder\RemoveAllReminderEvents',
-            'App\Listeners\Reminder\DecreaseNumberOfReminders',
-        ],
-        'App\Events\Gift\GiftCreated' => [
-            'App\Listeners\Gift\LogGiftCreatedEvent',
-            'App\Listeners\Gift\IncrementNumberOfGifts',
-        ],
-        'App\Events\Gift\GiftDeleted' => [
-            'App\Listeners\Gift\RemoveAllGiftEvents',
-            'App\Listeners\Gift\DecreaseNumberOfGifts',
+        \Illuminate\Auth\Events\Registered::class => [
+            \Illuminate\Auth\Listeners\SendEmailVerificationNotification::class,
         ],
     ];
 
     /**
-     * Register any other events for your application.
+     * The subscriber classes to register.
      *
-     * @param  \Illuminate\Contracts\Events\Dispatcher  $events
-     * @return void
+     * @var array
      */
-    public function boot()
-    {
-        parent::boot();
-
-        //
-    }
+    protected $subscribe = [
+        \App\Listeners\LoginListener::class,
+    ];
 }

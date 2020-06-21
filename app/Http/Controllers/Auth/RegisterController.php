@@ -2,14 +2,16 @@
 
 namespace App\Http\Controllers\Auth;
 
-use Auth;
-use App\User;
-use Socialite;
-use Validator;
-use App\Account;
-use App\Helpers\RandomHelper;
+use App\Models\User\User;
+use Illuminate\Http\Request;
+use App\Helpers\LocaleHelper;
+use App\Helpers\RequestHelper;
 use App\Jobs\SendNewUserAlert;
+use App\Helpers\InstanceHelper;
+use App\Models\Account\Account;
+use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Foundation\Auth\RegistersUsers;
 
 class RegisterController extends Controller
@@ -47,15 +49,18 @@ class RegisterController extends Controller
     /**
      * Show the application registration form.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\View\View
      */
-    public function showRegistrationForm()
+    public function showRegistrationForm(Request $request)
     {
-        if (env('APP_DISABLE_SIGNUP') == 'true') {
+        $first = ! InstanceHelper::hasAtLeastOneAccount();
+        if (config('monica.disable_signup') == 'true' && ! $first) {
             abort(403, trans('auth.signup_disabled'));
         }
 
-        return view('auth.register');
+        return view('auth.register')
+            ->withFirst($first)
+            ->withLocales(LocaleHelper::getLocaleList()->sortByCollator('lang'));
     }
 
     /**
@@ -71,90 +76,64 @@ class RegisterController extends Controller
             'first_name' => 'required|max:255',
             'email' => 'required|email|max:255|unique:users',
             'password' => 'required|min:6|confirmed',
+            'policy' => 'required',
         ]);
     }
 
     /**
      * Create a new user instance after a valid registration.
      *
-     * @param  array  $data
-     * @return User
+     * @param  array $data
+     * @return User|null
      */
-    protected function create(array $data)
+    protected function create(array $data): ?User
     {
-        $user = new User;
-        $user->first_name = $data['first_name'];
-        $user->last_name = $data['last_name'];
-        $user->email = $data['email'];
-        $user->password = bcrypt($data['password']);
-        $user->timezone = 'America/New_York';
-        $user->save();
-
-        // create a new account
-        $account = new Account;
-        $account->api_key = RandomHelper::generateString(30);
-        $account->save();
-
-        $user->account_id = $account->id;
-        $user->save();
-
-        // send me an alert
-        dispatch(new SendNewUserAlert($user));
-
-        return $user;
-    }
-
-    /**
-     * Redirect the user to the Facebook authentication page.
-     *
-     * @return Response
-     */
-    public function redirectToProvider()
-    {
-        return Socialite::driver('facebook')->redirect();
-    }
-
-    /**
-     * Obtain the user information from Facebook.
-     *
-     * @return Response
-     */
-    public function handleProviderCallback()
-    {
-        $user = Socialite::driver('facebook')->user();
-
-        // Is there a user already registered?
-        $userObject = User::where('email', $user->getEmail())->first();
-
-        if (count($userObject) == 0) {
-
-            // Abort if signup is disabled
-            if (env('APP_DISABLE_SIGNUP') == 'true') {
-                abort(403);
-            }
-
-            $userObject = new User;
-            $userObject->first_name = 'Facebook';
-            $userObject->last_name = 'User';
-            $userObject->email = $user->getEmail();
-            $userObject->timezone = 'America/New_York';
-            $userObject->save();
-
-            // create a new account
-            $account = new Account;
-            $account->api_key = RandomHelper::generateString(30);
-            $account->save();
-
-            $userObject->account_id = $account->id;
-            $userObject->access_token = $user->token;
-            $userObject->save();
-
-            // send me an alert
-            dispatch(new SendNewUserAlert($userObject));
+        $first = ! InstanceHelper::hasAtLeastOneAccount();
+        if (config('monica.disable_signup') == 'true' && ! $first) {
+            abort(403, trans('auth.signup_disabled'));
         }
 
-        Auth::login($userObject);
+        try {
+            $account = Account::createDefault(
+                $data['first_name'],
+                $data['last_name'],
+                $data['email'],
+                $data['password'],
+                RequestHelper::ip(),
+                $data['lang']
+            );
+            $user = $account->users()->first();
 
-        return redirect('/dashboard');
+            if (! $first) {
+                // send me an alert
+                dispatch(new SendNewUserAlert($user));
+            }
+
+            return $user;
+        } catch (\Exception $e) {
+            Log::warning($e);
+
+            return null;
+        }
+    }
+
+    /**
+     * The user has been registered.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  mixed  $user
+     */
+    protected function registered(Request $request, $user)
+    {
+        if (is_null($user)) {
+            return $user;
+        }
+
+        /** @var int $count */
+        $count = Account::count();
+        if (! config('monica.signup_double_optin') || $count == 1) {
+            // if signup_double_optin is disabled, skip the confirm email part
+            $user->markEmailAsVerified();
+        }
     }
 }

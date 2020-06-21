@@ -2,7 +2,8 @@
 
 namespace App\Providers;
 
-use Illuminate\Contracts\Auth\Access\Gate as GateContract;
+use Illuminate\Http\Request;
+use Laravel\Passport\Passport;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 
 class AuthServiceProvider extends ServiceProvider
@@ -19,13 +20,13 @@ class AuthServiceProvider extends ServiceProvider
     /**
      * Register any application authentication / authorization services.
      *
-     * @param  \Illuminate\Contracts\Auth\Access\Gate  $gate
      * @return void
      */
-    public function boot(GateContract $gate)
+    public function boot(Request $request)
     {
-        $this->registerPolicies($gate);
+        $this->registerPolicies();
 
-        //
+        Passport::routes();
+        Passport::ignoreCsrfToken(in_array($request->method(), ['HEAD', 'GET', 'OPTIONS']));
     }
 }

@@ -2,14 +2,13 @@
 
 namespace App\Console\Commands;
 
-use App\Contact;
-use App\Country;
-use App\User;
+use App\Models\User\User;
+use Illuminate\Http\File;
 use Illuminate\Console\Command;
+use App\Jobs\AddContactFromVCard;
+use App\Models\Account\ImportJob;
 use Illuminate\Filesystem\Filesystem;
-use Sabre\VObject\Component\VCard;
-use Sabre\VObject\Property\ICalendar\DateTime;
-use Sabre\VObject\Reader;
+use Illuminate\Support\Facades\Storage;
 
 class ImportVCards extends Command
 {
@@ -18,7 +17,9 @@ class ImportVCards extends Command
      *
      * @var string
      */
-    protected $signature = 'import:vcard {user} {path}';
+    protected $signature = 'import:vcard
+                            {--user= : user to import the contacts}
+                            {--path= : path of the file to import}';
 
     /**
      * The console command description.
@@ -28,16 +29,6 @@ class ImportVCards extends Command
     protected $description = 'Imports contacts from vCard files for a specific user';
 
     /**
-     * Create a new command instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        parent::__construct();
-    }
-
-    /**
      * Execute the console command.
      *
      * @param Filesystem $filesystem
@@ -45,145 +36,81 @@ class ImportVCards extends Command
      */
     public function handle(Filesystem $filesystem)
     {
-        $path = './' . $this->argument('path');
+        $email = $this->option('user');
 
-        $user = User::where('email', $this->argument('user'))->first();
+        // if no email was passed to the option, prompt the user to enter the email
+        if (! $email) {
+            $email = $this->ask('what is the user\'s email?');
+        }
 
-        if (!$user) {
-            $this->error('You need to provide a valid user email!');
+        // retrieve the user with the specified email
+        $user = User::where('email', $email)->first();
+
+        if (! $user) {
+            // show an error and exist if the user does not exist
+            $this->error('No user with that email.');
+
             return;
         }
 
-        if (!$filesystem->exists($path) || $filesystem->extension($path) !== 'vcf') {
+        $path = $this->option('path');
+
+        // if no email was passed to the option, prompt the user to enter the email
+        if (! $path) {
+            $path = $this->ask('what file you want to import?');
+        }
+
+        if (! $filesystem->exists($path) || ! $this->acceptedExtensions($filesystem, $path)) {
             $this->error('The provided vcard file was not found or is not valid!');
 
             return;
         }
 
-        $matchCount = preg_match_all('/(BEGIN:VCARD.*?END:VCARD)/s', $filesystem->get($path), $matches);
+        $importJob = $this->import($path, $user);
 
-        $this->info("We found {$matchCount} contacts in {$path}.");
+        return $this->report($importJob) ? 0 : 1;
+    }
 
-        if ($this->confirm('Would you like to import them?', true)) {
+    private function acceptedExtensions(Filesystem $filesystem, string $path): bool
+    {
+        switch ($filesystem->extension($path)) {
+            case 'vcf':
+            case 'vcard':
+                return true;
+            default:
+                return false;
+        }
+    }
 
-            $this->info("Importing contacts from {$path}");
+    private function import(string $path, User $user): ImportJob
+    {
+        $pathName = Storage::putFile('public', new File($path));
 
-            $this->output->progressStart($matchCount);
+        $importJob = $user->account->importjobs()->create([
+            'user_id' => $user->id,
+            'type' => 'vcard',
+            'filename' => $pathName,
+        ]);
 
-            $skippedContacts = 0;
+        dispatch_now(new AddContactFromVCard($importJob));
 
-            collect($matches[0])->map(function ($vcard) {
-                return Reader::read($vcard);
-            })->each(function (VCard $vcard) use ($user, $skippedContacts) {
+        return $importJob;
+    }
 
-                if ($this->contactExists($vcard, $user)) {
-                    $this->output->progressAdvance();
-                    $skippedContacts++;
+    private function report(ImportJob $importJob)
+    {
+        $importJob->refresh();
 
-                    return;
-                }
+        if ($importJob->failed) {
+            $this->warn('Error: '.$importJob->failed_reason);
 
-                // Skip contact if there isn't a first name or a nickname
-                if (! $this->contactHasName($vcard)) {
-                    $this->output->progressAdvance();
-                    $skippedContacts++;
-
-                    return;
-                }
-
-                $contact = new Contact();
-                $contact->account_id = $user->account_id;
-
-                if($vcard->N && ! empty($vcard->N->getParts()[1])) {
-                    $contact->first_name = $this->formatValue($vcard->N->getParts()[1]);
-                    $contact->middle_name = $this->formatValue($vcard->N->getParts()[2]);
-                    $contact->last_name = $this->formatValue($vcard->N->getParts()[0]);
-                } else {
-                    $contact->first_name = $this->formatValue($vcard->NICKNAME);
-                }
-
-                $contact->gender = 'none';
-                $contact->is_birthdate_approximate = 'unknown';
-
-                if ($vcard->BDAY && !empty((string) $vcard->BDAY)) {
-                    $contact->birthdate = new \DateTime((string) $vcard->BDAY);
-                }
-
-                $contact->email = $this->formatValue($vcard->EMAIL);
-                $contact->phone_number = $this->formatValue($vcard->TEL);
-
-                if($vcard->ADR) {
-                    $contact->street = $this->formatValue($vcard->ADR->getParts()[2]);
-                    $contact->city = $this->formatValue($vcard->ADR->getParts()[3]);
-                    $contact->province = $this->formatValue($vcard->ADR->getParts()[4]);
-                    $contact->postal_code = $this->formatValue($vcard->ADR->getParts()[5]);
-
-                    $country = Country::where('country', $vcard->ADR->getParts()[6])
-                        ->orWhere('iso', strtolower($vcard->ADR->getParts()[6]))
-                        ->first();
-
-                    if ($country) {
-                        $contact->country_id = $country->id;
-                    }
-                }
-
-                $contact->job = $this->formatValue($vcard->ORG);
-
-                $contact->setAvatarColor();
-
-                $contact->save();
-
-                $contact->logEvent('contact', $contact->id, 'create');
-
-                $this->output->progressAdvance();
-            });
-
-            $this->output->progressFinish();
-
-            $this->info("Successfully imported {$matchCount} contacts and skipped {$skippedContacts}.");
+            return false;
         }
 
-    }
+        $this->info('Contacts found: '.$importJob->contacts_found);
+        $this->info('Contacts skipped: '.$importJob->contacts_skipped);
+        $this->info('Contacts imported: '.$importJob->contacts_imported);
 
-    /**
-     * Formats and returns a string for the contact
-     *
-     * @param null|string $value
-     * @return null|string
-     */
-    private function formatValue($value)
-    {
-        return !empty((string) $value) ? (string) $value : null;
-    }
-
-    /**
-     * Checks whether a contact already exists for a given account
-     *
-     * @param VCard $vcard
-     * @param User $user
-     * @return bool
-     */
-    private function contactExists(VCard $vcard, User $user)
-    {
-        $email = (string) $vcard->EMAIL;
-
-        $contact = Contact::where([
-            ['account_id', $user->account_id],
-            ['email', $email]
-        ])->first();
-
-        return $email && $contact;
-    }
-
-    /**
-     * Checks whether a contact has a first name or a nickname.
-     * Nickname is used as a fallback if no first name is provided.
-     *
-     * @param VCard $vcard
-     * @return bool
-     */
-    function contactHasName(VCard $vcard): bool
-    {
-        return ! empty($vcard->N->getParts()[1]) || ! empty((string) $vcard->NICKNAME);
+        return true;
     }
 }

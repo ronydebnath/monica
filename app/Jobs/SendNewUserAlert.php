@@ -2,13 +2,13 @@
 
 namespace App\Jobs;
 
-use App\User;
-use App\Mail\NewUserAlert;
+use App\Models\User\User;
 use Illuminate\Bus\Queueable;
-use Illuminate\Support\Facades\Mail;
+use App\Notifications\NewUserAlert;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Support\Facades\Notification;
 
 class SendNewUserAlert implements ShouldQueue
 {
@@ -33,6 +33,10 @@ class SendNewUserAlert implements ShouldQueue
      */
     public function handle()
     {
-        Mail::to(env('APP_EMAIL_NEW_USERS_NOTIFICATION'))->send(new NewUserAlert($this->user));
+        $email = config('monica.email_new_user_notification');
+        if (! empty($email)) {
+            Notification::route('mail', $email)
+                ->notify(new NewUserAlert($this->user));
+        }
     }
 }

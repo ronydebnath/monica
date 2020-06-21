@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\App;
 
 class DatabaseSeeder extends Seeder
 {
@@ -11,20 +12,15 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        if (env('APP_ENV') == 'local') {
-            $this->call(ActivityTypesTableSeeder::class);
-            $this->call(CountriesSeederTable::class);
-            $this->call(FakeContentTableSeeder::class);
-        }
-
-        if (env('APP_ENV') == 'testing') {
-            $this->call(ActivityTypesTableSeeder::class);
-            $this->call(CountriesSeederTable::class);
-        }
-
-        if (env('APP_ENV') == 'production') {
-            $this->call(ActivityTypesTableSeeder::class);
-            $this->call(CountriesSeederTable::class);
+        switch (App::environment()) {
+            case 'local':
+                $this->call(FakeUserTableSeeder::class);
+            break;
+            case 'testing':
+                $this->call(FakeUserTableSeeder::class);
+            break;
+            case 'production':
+            break;
         }
     }
 }

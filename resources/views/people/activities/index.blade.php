@@ -1,45 +1,7 @@
-<div class="col-xs-12 section-title">
-  <img src="/img/people/activities.svg" class="icon-section icon-activities">
-  <h3>
-    {{ trans('people.section_personal_activities') }}
+<div class="{{ htmldir() == 'ltr' ? 'fl' : 'fr' }} w-100 pb3 pt1 pl3 pr3">
+  <div class="br2 bg-white mb2">
 
-    <span><a href="/people/{{ $contact->id }}/activities/add" class="btn">{{ trans('people.activities_add_activity') }}</a></span>
-  </h3>
+    <activity-list hash="{{ $contact->hashID() }}" :contact-id="{{ $contact->id }}" name="{{ $contact->first_name }}" />
+
+  </div>
 </div>
-
-@if ($contact->getNumberOfActivities() == 0)
-
-  <div class="col-xs-12">
-    <div class="section-blank">
-      <h3>{{ trans('people.activities_blank_title', ['name' => $contact->getFirstName()]) }}</h3>
-      <a href="/people/{{ $contact->id }}/activities/add">{{ trans('people.activities_blank_add_activity') }}</a>
-    </div>
-  </div>
-
-@else
-
-  <div class="col-xs-12 activities-list">
-
-    <ul class="table">
-      @foreach($contact->getActivities() as $activity)
-      <li class="table-row">
-        <div class="table-cell activity-date">
-          {{ \App\Helpers\DateHelper::getShortDate($activity->getDateItHappened(), Auth::user()->locale) }}
-        </div>
-        <div class="table-cell">
-          {{ $activity->getSummary() }}
-        </div>
-        <div class="table-cell activity-actions">
-          <a href="/people/{{ $contact->id }}/activities/{{ $activity->id }}/edit" class="edit">
-            <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
-          </a>
-          <a href="/people/{{ $contact->id }}/activities/{{ $activity->id }}/delete" onclick="return confirm('{{ trans('people.activities_delete_confirmation') }}')">
-            <i class="fa fa-trash-o" aria-hidden="true"></i>
-          </a>
-        </div>
-      </li>
-      @endforeach
-    </ul>
-  </div>
-
-@endif

@@ -1,76 +1,79 @@
-<div class="col-xs-12 section-title">
-  <img src="/img/people/reminders.svg" class="icon-section icon-reminders">
+<div class="col-12 section-title">
+  <img src="img/people/reminders.svg" class="icon-section icon-reminders">
   <h3>
     {{ trans('people.section_personal_reminders') }}
 
-    <span>
-      <a href="/people/{{ $contact->id }}/reminders/add" class="btn">{{ trans('people.reminders_cta') }}</a>
+    <span class="{{ htmldir() == 'ltr' ? 'fr' : 'fl' }}">
+      <a href="{{ route('people.reminders.create', $contact) }}" class="btn">{{ trans('people.reminders_cta') }}</a>
     </span>
   </h3>
 </div>
 
 
-@if ($contact->getNumberOfReminders() == 0)
+@if ($reminders->count() === 0)
 
-  <div class="col-xs-12">
+  <div class="col-12">
     <div class="section-blank">
-      <h3>{{ trans('people.reminders_blank_title', ['name' => $contact->getFirstName()]) }}</h3>
-      <a href="/people/{{ $contact->id }}/reminders/add">{{ trans('people.reminders_blank_add_activity') }}</a>
+      <h3>{{ trans('people.reminders_blank_title', ['name' => $contact->first_name]) }}</h3>
+      <a href="{{ route('people.reminders.create', $contact) }}">{{ trans('people.reminders_blank_add_activity') }}</a>
     </div>
   </div>
 
 @else
 
-  <div class="col-xs-12 reminders-list">
+  <div class="col-12 reminders-list">
 
+    @if (! $accountHasLimitations)
     <p>{{ trans('people.reminders_description') }}</p>
+    @else
+    <p>{{ trans('people.reminders_free_plan_warning') }}</p>
+    @endif
 
-    <table class="table table-sm table-hover">
-      <thead>
-        <tr>
-          <th>{{ trans('people.reminders_date') }}</th>
-          <th>{{ trans('people.reminders_frequency') }}</th>
-          <th>{{ trans('people.reminders_content') }}</th>
-          <th class="actions">{{ trans('people.reminders_actions') }}</th>
-        </tr>
-      </thead>
-      <tbody>
-        @foreach($contact->getReminders() as $reminder)
-          <tr>
-            <td class="date">{{ $reminder->getNextExpectedDate() }}</td>
+    <ul class="table">
+      @foreach($reminders as $reminder)
+      <li class="table-row">
 
-            <td class="date">
-              @if ($reminder->frequency_type != 'one_time')
-                {{ trans_choice('people.reminder_frequency_'.$reminder->frequency_type, $reminder->frequency_number, ['number' => $reminder->frequency_number]) }}
-              @else
-                {{ trans('people.reminders_one_time') }}
-              @endif
-            </td>
+        <div class="table-cell date">
+          {{ $reminder->next_expected_date_human_readable }}
+        </div>
 
-            <td>
-              {{ $reminder->getTitle() }}
-            </td>
+        <div class="table-cell frequency-type">
+          @if ($reminder->frequency_type != 'one_time')
+            {{ trans_choice('people.reminder_frequency_'.$reminder->frequency_type, $reminder->frequency_number, ['number' => $reminder->frequency_number]) }}
+          @else
+            {{ trans('people.reminders_one_time') }}
+          @endif
+        </div>
 
-            <td class="actions">
+        <div class="table-cell title">
+          {{ $reminder->title }}
+        </div>
 
-              <div class="reminder-actions">
-                <ul class="horizontal">
-                  <li><a href="/people/{{ $contact->id }}/reminders/{{ $reminder->id }}/delete" onclick="return confirm('{{ trans('people.reminders_delete_confirmation') }}')">{{ trans('people.reminders_delete_cta') }}</a></li>
-                </ul>
-              </div>
-
-            </td>
-
-            @if (!is_null($reminder->getDescription()))
-            <td class="reminder-comment">
-              {{ $reminder->getDescription() }}
-            </td>
+        <div class="table-cell comment">
+            @if (!is_null($reminder->description))
+              {{ $reminder->description }}
             @endif
+        </div>
 
-          </tr>
-        @endforeach
-      </tbody>
-    </table>
+        <div class="table-cell list-actions">
+          {{-- Only display this if the reminder can be deleted - ie if it's not a reminder added automatically for birthdates --}}
+          @if ($reminder->delible)
+            <a href="{{ route('people.reminders.edit', [$contact, $reminder]) }}" class="edit">
+              <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+            </a>
+            <form method="POST" action="{{ route('people.reminders.destroy', [$contact, $reminder]) }}">
+              @method('DELETE')
+              @csrf
+              <confirm message="{{ trans('people.reminders_delete_confirmation') }}">
+                <i class="fa fa-trash-o" aria-hidden="true"></i>
+              </confirm>
+            </form>
+           @endif
+        </div>
+
+      </li>
+      @endforeach
+    </ul>
   </div>
 
 @endif

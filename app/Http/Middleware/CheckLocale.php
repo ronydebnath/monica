@@ -2,8 +2,9 @@
 
 namespace App\Http\Middleware;
 
-use Auth;
 use Closure;
+use App\Helpers\LocaleHelper;
+use Illuminate\Support\Facades\App;
 
 class CheckLocale
 {
@@ -16,9 +17,13 @@ class CheckLocale
      */
     public function handle($request, Closure $next)
     {
-        if (Auth::check()) {
-            \App::setLocale(Auth::user()->locale);
+        $locale = $request->query('lang');
+
+        if (empty($locale)) {
+            $locale = LocaleHelper::getLocale();
         }
+
+        App::setLocale($locale);
 
         return $next($request);
     }

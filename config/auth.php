@@ -42,7 +42,7 @@ return [
         ],
 
         'api' => [
-            'driver' => 'token',
+            'driver' => 'passport',
             'provider' => 'users',
         ],
     ],
@@ -67,7 +67,7 @@ return [
     'providers' => [
         'users' => [
             'driver' => 'eloquent',
-            'model' => App\User::class,
+            'model' => App\Models\User\User::class,
         ],
 
         // 'users' => [
@@ -101,7 +101,54 @@ return [
             'email' => 'auth.emails.password',
             'table' => 'password_resets',
             'expire' => 60,
+            'throttle' => 60,
         ],
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Password Confirmation Timeout
+    |--------------------------------------------------------------------------
+    |
+    | Here you may define the amount of seconds before a password confirmation
+    | times out and the user is prompted to re-enter their password via the
+    | confirmation screen. By default, the timeout lasts for three hours.
+    |
+    */
+
+    'password_timeout' => 10800,
+
+    /*
+    | Invitation Email
+    |--------------------------------------------------------------------------
+    |
+    | Parameters for the invitation email send, requested by a user.
+    | Expire is in days.
+    |
+    */
+
+    'invitation' => [
+        'expire' => 2,
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Recovery codes generation
+    |--------------------------------------------------------------------------
+    |
+    | Recovery codes can be used to access your account in the event you lost
+    | access to the device used to generate or receive two-factor
+    | authentication codes.
+    |
+    | * count: number of recovery codes to generate
+    | * blocks: number of blocks in one code
+    | * chars: number of characters per block
+    |
+    */
+
+    'recovery' => [
+        'count' => 8,
+        'blocks' => 2,
+        'chars' => 4,
+    ],
 ];
