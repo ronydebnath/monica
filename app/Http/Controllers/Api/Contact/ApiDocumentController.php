@@ -16,6 +16,17 @@ use App\Http\Resources\Document\Document as DocumentResource;
 class ApiDocumentController extends ApiController
 {
     /**
+     * Instantiate a new controller instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->middleware('limitations')->only('store');
+        parent::__construct();
+    }
+
+    /**
      * Get the list of documents.
      *
      * @param Request $request
@@ -120,7 +131,7 @@ class ApiDocumentController extends ApiController
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function destroy(Request $request, $documentId)
+    public function destroy(Request $request, int $documentId)
     {
         try {
             app(DestroyDocument::class)->execute([
@@ -135,6 +146,6 @@ class ApiDocumentController extends ApiController
             return $this->respondInvalidQuery();
         }
 
-        return $this->respondObjectDeleted((int) $documentId);
+        return $this->respondObjectDeleted($documentId);
     }
 }

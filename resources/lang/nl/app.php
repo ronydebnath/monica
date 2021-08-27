@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * ⚠️ Editing not allowed except for 'en' language.
+ *
+ * @see https://github.com/monicahq/monica/blob/master/docs/contribute/translate.md for translations.
+ */
+
 return [
     'yes' => 'Ja',
     'no' => 'Nee',
@@ -7,8 +13,8 @@ return [
     'save' => 'Opslaan',
     'add' => 'Toevoegen',
     'cancel' => 'Annuleren',
-    'confirm' => 'Confirm',
-    'delete_confirm' => 'Weet je het zeker?',
+    'confirm' => 'Bevestigen',
+    'delete_confirm' => 'Zeker weten?',
     'delete' => 'Verwijderen',
     'edit' => 'Bewerken',
     'upload' => 'Uploaden',
@@ -25,7 +31,7 @@ return [
     'new' => 'nieuw',
     'unknown' => 'Ik weet het niet',
     'load_more' => 'Meer laden',
-    'loading' => 'Laden...',
+    'loading' => 'Laden…',
     'with' => 'met',
     'today' => 'vandaag',
     'yesterday' => 'gisteren',
@@ -38,11 +44,11 @@ return [
     'retry' => 'Opnieuw Proberen',
     'filter' => 'Filter de lijst',
     'go_back' => 'Terug',
-    'file_selected' => '1 file selected...|{count} files selected...',
+    'file_selected' => 'Één bestand geselecteerd…|{count} bestanden geselecteerd…',
 
     'application_title' => 'Monica – persoonlijke relatie manager',
     'application_description' => 'Monica is een app voor het beheren van interacties met uw geliefden, vrienden en familie.',
-    'application_og_title' => 'Bouw betere relaties met uw dierbaren. Gratis Online CRM voor vrienden en familie.',
+    'application_og_title' => 'Heb betere relaties met je geliefden. Gratis online CRM voor familie en vrienden.',
 
     'markdown_description' => 'Wilt u uw tekst opmaken op een leuke manier? Wij ondersteunen Markdown om vet, cursief, lijsten en meer toe te voegen.',
     'markdown_link' => 'Lees documentatie',
@@ -58,14 +64,14 @@ return [
     'main_nav_activities' => 'Activiteiten',
     'main_nav_tasks' => 'Taken',
 
-    'footer_remarks' => 'Eventuele opmerkingen?',
-    'footer_send_email' => 'Stuur me een e-mail',
+    'footer_remarks' => 'Opmerkingen?',
+    'footer_send_email' => 'Stuur ons een e-mail',
     'footer_privacy' => 'Privacybeleid',
     'footer_release' => 'Releaseopmerkingen',
     'footer_newsletter' => 'Nieuwsbrief',
     'footer_source_code' => 'Bijdragen',
     'footer_version' => 'Versie: :version',
-    'footer_new_version' => 'Er is een nieuwe versie beschikbaar',
+    'footer_new_version' => 'Er is een nieuwe versie van Monica beschikbaar',
 
     'footer_modal_version_whats_new' => 'Wat is er nieuw',
     'footer_modal_version_release_away' => 'Je loopt 1 versie achter op de laatst beschikbare versie. Je zou je applicatie moeten bijwerken.|Je loopt :number versies achter op de laatst beschikbare versie. Je zou je applicatie moeten bijwerken.',
@@ -102,12 +108,12 @@ return [
 
     'error_title' => 'Oeps! Er is iets misgegaan.',
     'error_unauthorized' => 'Je hebt niet de rechten om dit onderdeel te bewerken.',
-    'error_user_account' => 'This user does not belong to the given account.',
+    'error_user_account' => 'Deze gebruiker behoort niet tot het opgegeven account.',
     'error_save' => 'Er is een fout opgetreden bij het opslaan van de gegevens.',
     'error_try_again' => 'Er ging iets mis. Probeer opnieuw.',
     'error_id' => 'Fout-ID: :id',
-    'error_unavailable' => 'Service unavailable',
-    'error_maintenance' => 'Onderhoud in uitvoering. Zo terug.',
+    'error_unavailable' => 'Service niet beschikbaar',
+    'error_maintenance' => 'Werkzaamheden zijn bezig. Een ogenblik graag.',
     'error_help' => 'We zijn zo terug.',
     'error_twitter' => '<a href="https://twitter.com/:twitter">Volg ons op Twitter</a> als je gewaarschuwd wilt worden als we terug zijn.',
     'error_no_term' => 'Er zijn nog geen voorwaarden opgesteld voor deze server.',
@@ -213,9 +219,9 @@ return [
     'relationship_type_nephew_female_with_name' => ':name’s nicht',
 
     'relationship_type_cousin' => 'neef',
-    'relationship_type_cousin_female' => 'neef',
+    'relationship_type_cousin_female' => 'nicht',
     'relationship_type_cousin_with_name' => ':name’s neef',
-    'relationship_type_cousin_female_with_name' => ':name’s neef',
+    'relationship_type_cousin_female_with_name' => ':name’s nicht',
 
     'relationship_type_godfather' => 'peetoom',
     'relationship_type_godfather_female' => 'peet moeder',
@@ -232,8 +238,8 @@ return [
     'relationship_type_friend_with_name' => ':name’s vriend',
     'relationship_type_friend_female_with_name' => ':name’s vriend',
 
-    'relationship_type_bestfriend' => 'beste Vriend',
-    'relationship_type_bestfriend_female' => 'beste Vriend',
+    'relationship_type_bestfriend' => 'beste vriend',
+    'relationship_type_bestfriend_female' => 'beste vriend',
     'relationship_type_bestfriend_with_name' => ':name’s beste vriend',
     'relationship_type_bestfriend_female_with_name' => ':name’s beste vriend',
 
@@ -259,8 +265,8 @@ return [
 
     'relationship_type_protege' => 'protege',
     'relationship_type_protege_female' => 'protege',
-    'relationship_type_protege_with_name' => ':name’s protege',
-    'relationship_type_protege_female_with_name' => ':name’s protege',
+    'relationship_type_protege_with_name' => ':name\'s protege',
+    'relationship_type_protege_female_with_name' => ':name\'s protege',
 
     'relationship_type_ex_husband' => 'ex-echtgenoot',
     'relationship_type_ex_husband_female' => 'ex-vrouw',
@@ -456,4 +462,10 @@ return [
     'dav_birthdays_description' => 'Verjaardagen van de contacten van :name',
     'dav_tasks' => 'Taken',
     'dav_tasks_description' => 'Taken van :name',
+
+    // contact list
+    'contact_list_avatar' => 'Avatar',
+    'contact_list_name' => 'Contact',
+    'contact_list_description' => 'Beschrijving',
+
 ];

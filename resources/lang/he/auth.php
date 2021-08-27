@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * ⚠️ Editing not allowed except for 'en' language.
+ *
+ * @see https://github.com/monicahq/monica/blob/master/docs/contribute/translate.md for translations.
+ */
+
 return [
 
     /*
@@ -17,6 +23,7 @@ return [
     'throttle' => 'בוצעו יותר מדי ניסיונות כניסה כושלים. נא לנסות שוב בעוד :seconds שניות.',
     'not_authorized' => 'אין לך הרשאה להריץ את הפעולה הזאת',
     'signup_disabled' => 'ההרשמה מושבתת כרגע',
+    'signup_error' => 'אירעה שגיאה בעת רישום המשתמש',
     'back_homepage' => 'חזרה לדף הבית',
     'mfa_auth_otp' => 'אימות עם ההתקן שלך לאימות דו־שלבי',
     'mfa_auth_webauthn' => 'אימות עם מפתח אבטחה (WebAuthn)',
@@ -24,6 +31,7 @@ return [
     '2fa_wrong_validation' => 'האימות הדו־שלבי נכשל.',
     '2fa_one_time_password' => 'קוד אימות דו־שלבי',
     '2fa_recuperation_code' => 'נא להקליד את קוד השחזור לאימות הדו־שלבי',
+    '2fa_one_time_or_recuperation' => 'לא למלא קוד אימות דו־שלבי או קוד שחזור',
     '2fa_otp_help' => 'יש לפתוח את יישומון האימות הדו־שלבי שלך ולהעתיק את הקוד',
 
     'login_to_account' => 'כניסה לחשבון שלך',

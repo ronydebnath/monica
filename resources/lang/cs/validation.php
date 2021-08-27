@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * ⚠️ Editing not allowed except for 'en' language.
+ *
+ * @see https://github.com/monicahq/monica/blob/master/docs/contribute/translate.md for translations.
+ */
+
 return [
 
     /*
@@ -110,7 +116,7 @@ return [
         'string' => ':attribute musí být přesně :size znaků dlouhý.',
         'array' => ':attribute musí obsahovat právě :size prvků.',
     ],
-    'starts_with' => ':attribute musí začínat jednou z následujících hodnot: :values',
+    'starts_with' => ':attribute musí začínat jednou z následujících hodnot: :values.',
     'string' => ':attribute musí být řetězec znaků.',
     'timezone' => ':attribute musí být platná časová zóna.',
     'unique' => ':attribute musí být unikátní.',
@@ -147,5 +153,14 @@ return [
     */
 
     'attributes' => [],
+
+    'vue' => [
+        'max' => [
+            'numeric' => '{field} nesmí být větší než {max}.',
+            'string' => '{field} nesmí být delší než {max} znaků.',
+        ],
+        'required' => '{field} je povinné.',
+        'url' => '{field} není platná adresa URL.',
+    ],
 
 ];

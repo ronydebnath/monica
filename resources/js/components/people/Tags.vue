@@ -8,63 +8,71 @@
     background-color: #4AAE9B;
     color: white;
   }
+
+.tag-link,
+.tag-link:hover{
+    text-decoration: none;
+}
 </style>
 
 <template>
   <div class="tc">
-    <div v-show="editMode" class="mb3">
-      <div class="relative di mr2">
-        <input v-model="search"
-               type="text"
-               class="di br2 f5 ba b--black-40 pa2 outline-0"
-               :placeholder="$t('people.tag_add_search')"
-               @keydown.down="onArrowDown"
-               @keydown.up="onArrowUp"
-               @keydown.enter="onEnter"
-               @keydown.esc="onEscape"
-               @input="onChange"
-        />
-
-        <ul v-show="isOpen" class="autocomplete-results ba b--gray-monica absolute bg-white left-0 z-9999">
-          <li v-for="(result, i) in results"
-              :key="i"
-              class="autocomplete-result"
-              :class="{ 'is-active': i === arrowCounter }"
-              @click="setResult(result)"
-          >
-            {{ result.name }}
-          </li>
-        </ul>
-      </div>
-
-      <a class="pointer" href="" @click.prevent="editMode = false">
-        {{ $t('app.cancel') }}
-      </a>
-      <a class="pointer" href="" @click.prevent="store()">
-        {{ $t('app.save_close') }}
-      </a>
-    </div>
-
+    <!-- list of existing tags -->
     <ul>
       <li v-for="tag in contactTags" :key="tag.id" class="di mr2">
-        <span class="bg-white ph2 pb1 pt0 dib br3 b--light-gray ba mb2">
-          <span v-show="!editMode" class="pointer" @click="navigateTo(tag)">
+        <a v-if="!editMode" :href="`people?tags[]=${encodeURIComponent(tag.name)}`" class="tag-link bg-white ph2 pb1 pt0 dib br3 b--light-gray ba mb2">
+          {{ tag.name }}
+        </a>
+        <span v-else class="bg-white ph2 pb1 pt0 dib br3 b--light-gray ba mb2">
+          <span>
             {{ tag.name }}
           </span>
-          <span v-show="editMode">
-            {{ tag.name }}
-          </span>
-          <span v-show="editMode" class="pointer" @click="removeTag(tag)">
+          <span class="pointer" @click="removeTag(tag)">
             ×
           </span>
         </span>
       </li>
+
+      <!-- edit button -->
       <li v-show="contactTags.length > 0" class="di">
-        <a v-show="!editMode" class="pointer" href="" @click.prevent="editMode = true">
+        <a v-show="!editMode" class="pointer" href="" @click.prevent="search = ''; editMode = true">
           {{ $t('app.edit') }}
         </a>
       </li>
-      <li v-show="contactTags.length == 0" class="di">
+
+      <!-- add a new tag -->
+      <li v-show="editMode" class="di mb3">
+        <div class="relative di mr2">
+          <input v-model="search"
+                 type="text"
+                 class="di br2 f5 ba b--black-40 pa2 outline-0"
+                 :placeholder="$t('people.tag_add_search')"
+                 @keydown.down="onArrowDown"
+                 @keydown.up="onArrowUp"
+                 @keydown.enter="onEnter"
+                 @keydown.esc="onEscape"
+                 @input="onChange"
+          />
+
+          <ul v-show="isOpen" v-if="results.length > 0" class="autocomplete-results ba b--gray-monica absolute bg-white left-0 z-9999">
+            <li v-for="(result, i) in results"
+                :key="i"
+                class="autocomplete-result"
+                :class="{ 'is-active': i === arrowCounter }"
+                @click="setResult(result)"
+            >
+              {{ result.name }}
+            </li>
+          </ul>
+        </div>
+
+        <a class="pointer" href="" @click.prevent="editMode = false">
+          {{ $t('app.close') }}
+        </a>
+      </li>
+
+      <!-- case of no tags -->
+      <li v-show="contactTags.length == 0 && !editMode" class="di">
         <span class="i mr2">
           {{ $t('people.tag_no_tags') }}
         </span>
@@ -137,6 +145,7 @@ export default {
 
     removeTag(tag) {
       this.contactTags.splice(this.contactTags.indexOf(tag), 1);
+      this.store();
     },
 
     onChange() {
@@ -153,6 +162,7 @@ export default {
         this.arrowCounter = -1;
         this.isOpen = false;
         this.search = null;
+        this.store();
       }
     },
 
@@ -180,10 +190,14 @@ export default {
       this.search = null;
       this.isOpen = false;
       this.contactTags.push(result);
+      this.store();
     },
 
     filterResults() {
-      this.results = this.allTags.filter(item => item.name.toLowerCase().indexOf(this.search.toLowerCase()) > -1);
+      var me = this.contactTags;
+      var search = _.toLower(this.search);
+      this.results = this.allTags.filter(item => _.toLower(item.name).indexOf(search) > -1
+                                                  && _.findIndex(me, t => t.name == item.name) < 0);
     },
 
     filterAllTags() {
@@ -194,15 +208,10 @@ export default {
     },
 
     store() {
-      this.editMode = false;
       axios.post('people/' + this.hash + '/tags/update', this.contactTags)
         .then(response => {
           this.getExistingTags();
         });
-    },
-
-    navigateTo(tag) {
-      window.location.href = 'people?tag1=' + tag.name_slug;
     },
 
     handleClickOutside(evt) {

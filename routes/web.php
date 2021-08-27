@@ -19,6 +19,11 @@ Route::get('/', 'Auth\LoginController@showLoginOrRegister')->name('loginRedirect
 
 Auth::routes(['verify' => true]);
 
+// Redirect .well-known urls (https://en.wikipedia.org/wiki/List_of_/.well-known/_services_offered_by_webservers)
+Route::permanentRedirect('/.well-known/carddav', '/dav/');
+Route::permanentRedirect('/.well-known/caldav', '/dav/');
+Route::permanentRedirect('/.well-known/security.txt', '/security.txt');
+
 Route::get('/invitations/accept/{key}', 'Auth\InvitationController@show')->name('invitations.accept');
 Route::post('/invitations/accept/{key}', 'Auth\InvitationController@store')->name('invitations.send');
 
@@ -40,6 +45,8 @@ Route::middleware(['auth', 'verified', 'mfa'])->group(function () {
         Route::get('/dashboard/debts', 'DashboardController@debts');
         Route::post('/dashboard/setTab', 'DashboardController@setTab');
     });
+
+    Route::get('/store/{file}', 'StorageController@show')->where('file', '.*')->name('storage');
 
     Route::get('/compliance', 'ComplianceController@index')->name('compliance');
     Route::post('/compliance/sign', 'ComplianceController@store');
@@ -224,10 +231,13 @@ Route::middleware(['auth', 'verified', 'mfa'])->group(function () {
 
             Route::apiResource('settings/personalization/activitytypecategories', 'Account\\Activity\\ActivityTypeCategoriesController');
             Route::apiResource('settings/personalization/activitytypes', 'Account\\Activity\\ActivityTypesController', ['except' => ['index']]);
+
+            Route::get('settings/personalization/lifeeventcategories', 'Account\\LifeEvent\\LifeEventCategoriesController@index');
+            Route::apiResource('settings/personalization/lifeeventtypes', 'Account\\LifeEvent\\LifeEventTypesController', ['except' => ['index']]);
         });
 
         Route::get('/settings/export', 'SettingsController@export')->name('export');
-        Route::get('/settings/exportToSql', 'SettingsController@exportToSQL')->name('sql');
+        Route::post('/settings/exportToSql', 'SettingsController@exportToSQL')->name('sql');
         Route::get('/settings/import', 'SettingsController@import')->name('import');
         Route::get('/settings/import/report/{importjobid}', 'SettingsController@report')->name('report');
         Route::get('/settings/import/upload', 'SettingsController@upload')->name('upload');
@@ -249,6 +259,8 @@ Route::middleware(['auth', 'verified', 'mfa'])->group(function () {
             Route::get('/settings/subscriptions', 'Settings\\SubscriptionsController@index')->name('index');
             Route::get('/settings/subscriptions/upgrade', 'Settings\\SubscriptionsController@upgrade')->name('upgrade');
             Route::get('/settings/subscriptions/upgrade/success', 'Settings\\SubscriptionsController@upgradeSuccess')->name('upgrade.success');
+            Route::get('/settings/subscriptions/update', 'Settings\\SubscriptionsController@update')->name('update');
+            Route::post('/settings/subscriptions/update', 'Settings\\SubscriptionsController@processUpdate');
             Route::get('/settings/subscriptions/confirmPayment/{id}', 'Settings\\SubscriptionsController@confirmPayment')->name('confirm');
             Route::post('/settings/subscriptions/processPayment', 'Settings\\SubscriptionsController@processPayment')->name('payment');
             Route::get('/settings/subscriptions/invoice/{invoice}', 'Settings\\SubscriptionsController@downloadInvoice')->name('invoice');

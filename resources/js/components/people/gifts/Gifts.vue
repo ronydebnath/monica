@@ -1,6 +1,3 @@
-<style scoped>
-</style>
-
 <template>
   <div>
     <notifications group="main" position="bottom right" />
@@ -176,7 +173,7 @@ export default {
     },
 
     filteredGifts() {
-      let vm = this;
+      const vm = this;
       return this.gifts.filter(gift => gift.status == vm.activeTab);
     },
   },

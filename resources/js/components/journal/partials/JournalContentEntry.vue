@@ -1,6 +1,3 @@
-<style scoped>
-</style>
-
 <template>
   <div>
     <!-- Left columns: showing calendar -->
@@ -8,7 +5,9 @@
 
     <!-- Right column: showing logs -->
     <div :class="[ dirltr ? 'fl' : 'fr' ]" class="journal-calendar-content">
-      <div class="br3 ba b--gray-monica bg-white pr3 pb3 pt3 mb3 journal-line">
+      <div v-tooltip.top="$t('journal.journal_created_at', { date: entry.created_at })"
+           class="br3 ba b--gray-monica bg-white pr3 pb3 pt3 mb3 journal-line"
+      >
         <div class="flex">
           <!-- Day -->
           <div class="flex-none w-10 tc">
@@ -31,7 +30,7 @@
               {{ entry.title }}
             </h3>
 
-            <div dir="auto" class="markdown" v-html="entry.post"></div>
+            <span dir="auto" class="markdown" v-html="compiledMarkdown(entry.post)"></span>
 
             <ul class="f7">
               <li class="di">
@@ -40,9 +39,9 @@
                 </a>
               </li>
               <li class="di">
-                <a v-cy-name="'entry-delete-button-' + entry.id" class="pointer" href="" @click.prevent="trash()">
+                <confirm v-cy-name="'entry-delete-button-' + entry.id" :message="$t('journal.delete_confirmation')" @confirm="trash()">
                   {{ $t('app.delete') }}
-                </a>
+                </confirm>
               </li>
             </ul>
           </div>
@@ -53,7 +52,13 @@
 </template>
 
 <script>
+import Confirm from '../../partials/Confirm.vue';
+
 export default {
+
+  components: {
+    Confirm,
+  },
 
   props: {
     journalEntry: {
@@ -89,6 +94,10 @@ export default {
         .then(response => {
           this.$emit('deleteJournalEntry', this.journalEntry.id);
         });
+    },
+
+    compiledMarkdown (text) {
+      return text !== undefined && text !== null ? marked(text, { sanitize: true }) : '';
     }
   }
 };

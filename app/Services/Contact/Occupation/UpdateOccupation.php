@@ -43,10 +43,13 @@ class UpdateOccupation extends BaseService
     {
         $this->validate($data);
 
+        /** @var Occupation */
         $occupation = Occupation::where('account_id', $data['account_id'])
             ->where('contact_id', $data['contact_id'])
             ->where('company_id', $data['company_id'])
             ->findOrFail($data['occupation_id']);
+
+        $occupation->contact->throwInactive();
 
         $occupation->update([
             'title' => $data['title'],

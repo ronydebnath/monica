@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * ⚠️ Editing not allowed except for 'en' language.
+ *
+ * @see https://github.com/monicahq/monica/blob/master/docs/contribute/translate.md for translations.
+ */
+
 return [
     'yes' => 'はい',
     'no' => 'いいえ',
@@ -8,7 +14,7 @@ return [
     'add' => '追加',
     'cancel' => 'キャンセル',
     'confirm' => '確定する',
-    'delete_confirm' => 'はい',
+    'delete_confirm' => 'Are you sure?',
     'delete' => '削除',
     'edit' => '編集',
     'upload' => 'アップロード',
@@ -25,7 +31,7 @@ return [
     'new' => '新規',
     'unknown' => 'わかりません',
     'load_more' => '更に読み込む',
-    'loading' => '読み込んでいます.',
+    'loading' => 'Loading…',
     'with' => 'with',
     'today' => '今日',
     'yesterday' => '昨日',
@@ -38,11 +44,11 @@ return [
     'retry' => '再試行',
     'filter' => 'リストをフィルタ',
     'go_back' => '戻る',
-    'file_selected' => '1 file selected...|{count} files selected...',
+    'file_selected' => 'One file selected…|{count} files selected…',
 
     'application_title' => 'Monica – personal relationship manager',
     'application_description' => 'Monica（モニカ）はあなたの交流・家族・友人の情報を記録するツールです。',
-    'application_og_title' => 'Have better relations with your loved ones. Free Online CRM for friends and family.',
+    'application_og_title' => 'Have better relations with your loved ones. Free online CRM for friends and family.',
 
     'markdown_description' => 'Want to format your text nicely? We support Markdown to add bold, italic, lists, and more.',
     'markdown_link' => 'ドキュメントを読む',
@@ -58,14 +64,14 @@ return [
     'main_nav_activities' => 'アクテビティ',
     'main_nav_tasks' => 'タスク',
 
-    'footer_remarks' => 'Any remarks?',
-    'footer_send_email' => '開発者にメールを送信',
+    'footer_remarks' => 'Comments?',
+    'footer_send_email' => 'Send us an email',
     'footer_privacy' => 'プライバシーポリシー',
     'footer_release' => '更新情報',
     'footer_newsletter' => 'ニュースレター',
     'footer_source_code' => 'Contribute',
     'footer_version' => 'バージョン: :version',
-    'footer_new_version' => '新しいバージョンが利用可能です',
+    'footer_new_version' => 'A new version of Monica is available',
 
     'footer_modal_version_whats_new' => '新着情報',
     'footer_modal_version_release_away' => 'You are 1 release behind the latest version available. You should update your instance.|You are :number releases behind the latest version available. You should update your instance.',
@@ -107,7 +113,7 @@ return [
     'error_try_again' => 'Something went wrong. Please try again.',
     'error_id' => 'エラー ID: :id',
     'error_unavailable' => 'サービスを利用できません',
-    'error_maintenance' => 'メンテナンス中です。お戻りください。',
+    'error_maintenance' => 'Maintenance in progress. We’ll be right back.',
     'error_help' => 'メンテナンスはすぐに終わります。',
     'error_twitter' => 'Follow <a href="https://twitter.com/:twitter">our Twitter account</a> to be alerted when it’s up again.',
     'error_no_term' => 'There is no policy for this instance yet.',
@@ -177,7 +183,7 @@ return [
     'relationship_type_child_with_name' => ':name’s son',
     'relationship_type_child_female_with_name' => ':name’s daughter',
 
-    'relationship_type_stepparent' => 'stepfather',
+    'relationship_type_stepparent' => '義父',
     'relationship_type_stepparent_female' => 'stepmother',
     'relationship_type_stepparent_with_name' => ':name’s stepfather',
     'relationship_type_stepparent_female_with_name' => ':name’s stepmother',
@@ -217,7 +223,7 @@ return [
     'relationship_type_cousin_with_name' => ':name’s cousin',
     'relationship_type_cousin_female_with_name' => ':name’s cousin',
 
-    'relationship_type_godfather' => 'godfather',
+    'relationship_type_godfather' => '名付け親',
     'relationship_type_godfather_female' => 'godmother',
     'relationship_type_godfather_with_name' => ':name’s godfather',
     'relationship_type_godfather_female_with_name' => ':name’s godmother',
@@ -456,4 +462,10 @@ return [
     'dav_birthdays_description' => ':name’s contact’s birthdays',
     'dav_tasks' => 'タスク',
     'dav_tasks_description' => ':name’s tasks',
+
+    // contact list
+    'contact_list_avatar' => 'Avatar',
+    'contact_list_name' => 'Contact',
+    'contact_list_description' => 'Description',
+
 ];

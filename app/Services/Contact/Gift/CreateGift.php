@@ -47,8 +47,10 @@ class CreateGift extends BaseService
     {
         $this->validate($data);
 
-        Contact::where('account_id', $data['account_id'])
+        $contact = Contact::where('account_id', $data['account_id'])
             ->findOrFail($data['contact_id']);
+
+        $contact->throwInactive();
 
         if (isset($data['recipient_id'])) {
             Contact::where('account_id', $data['account_id'])
@@ -64,13 +66,15 @@ class CreateGift extends BaseService
             'url' => $this->nullOrvalue($data, 'url'),
             'amount' => $this->nullOrvalue($data, 'amount'),
             'date' => $this->nullOrvalue($data, 'date'),
-            'recipient' => $this->nullOrvalue($data, 'recipient_id'),
         ];
 
         if (Auth::check()) {
             $array['currency_id'] = Auth::user()->currency->id;
         }
 
-        return Gift::create($array);
+        return tap(Gift::create($array), function ($gift) use ($data): void {
+            $gift->recipient = $this->nullOrvalue($data, 'recipient_id');
+            $gift->save();
+        });
     }
 }

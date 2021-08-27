@@ -1,6 +1,3 @@
-<style scoped>
-</style>
-
 <template>
   <div>
     <notifications group="passport-clients" position="top middle" :duration="5000" width="400" />
@@ -200,7 +197,7 @@ export default {
      * Focus on modal open.
      */
     _focusInput() {
-      let vm = this;
+      const vm = this;
       setTimeout(function() {
         vm.$refs.clientName.focus();
       }, 10);
@@ -234,8 +231,8 @@ export default {
         return;
       }
 
-      let method = this.form.id ? 'put' : 'post';
-      let url = this.form.id ? 'oauth/clients/' + this.form.id : 'oauth/clients';
+      const method = this.form.id ? 'put' : 'post';
+      const url = this.form.id ? 'oauth/clients/' + this.form.id : 'oauth/clients';
 
       this.persistClient(method, url, this.form);
     },

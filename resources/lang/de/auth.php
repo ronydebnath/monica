@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * ⚠️ Editing not allowed except for 'en' language.
+ *
+ * @see https://github.com/monicahq/monica/blob/master/docs/contribute/translate.md for translations.
+ */
+
 return [
 
     /*
@@ -17,6 +23,7 @@ return [
     'throttle' => 'Zu viele Anmeldeversuche. Bitte in :seconds Sekunden erneut versuchen.',
     'not_authorized' => 'Du hast keine Berechtigung diese Aktion auszuführen',
     'signup_disabled' => 'Neue Registrierungen sind zur Zeit nicht möglich',
+    'signup_error' => 'Es ist ein Fehler bei der Registrierung des Benutzers aufgetreten',
     'back_homepage' => 'Zurück zur Seite',
     'mfa_auth_otp' => 'Authentifizieren Sie sich mit Ihrem Zwei-Faktor-Gerät',
     'mfa_auth_webauthn' => 'Authentifizieren mit einem Sicherheitsschlüssel (WebAuthn)',
@@ -24,6 +31,7 @@ return [
     '2fa_wrong_validation' => 'Die Zwei-Faktor-Authentifizierung ist fehlgeschlagen.',
     '2fa_one_time_password' => 'Zwei-Faktor-Authentifizierungscode',
     '2fa_recuperation_code' => 'Bitte gib deinen Zwei-Faktor-Wiederherstellungscode ein',
+    '2fa_one_time_or_recuperation' => 'Gib einen Zwei-Faktor-Authentifizierungscode oder einen Wiederherstellungscode ein',
     '2fa_otp_help' => 'Öffne deine Zwei-Faktor-Authentifizierungs-App und scanne den folgenden QR-Code',
 
     'login_to_account' => 'In Konto einloggen',
@@ -71,7 +79,7 @@ return [
     'confirmation_title' => 'E-Mail-Adresse bestätigen',
     'confirmation_fresh' => 'Ein Bestätigungslink wurde an Ihre E-Mail-Adresse geschickt.',
     'confirmation_check' => 'Bevor sie weitermachen, überprüfen sie bitte ihre E-mails nach einem Bestätigungslink.',
-    'confirmation_request_another' => 'If you did not receive the email <a :action>click here to request another</a>.',
+    'confirmation_request_another' => 'Falls Sie keine E-Mail erhalten haben, <a :action>klicken Sie hier um eine neue E-Mail zu erhalten</a>.',
 
     'confirmation_again' => 'Wenn Sie Ihre E-Mail-Adresse ändern möchten, <a href=":url" class="alert-link">klicken Sie bitte hier</a>.',
     'email_change_current_email' => 'Aktuelle E-Mail-Adresse:',

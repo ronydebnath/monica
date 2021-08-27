@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * ⚠️ Editing not allowed except for 'en' language.
+ *
+ * @see https://github.com/monicahq/monica/blob/master/docs/contribute/translate.md for translations.
+ */
+
 return [
 
     /*
@@ -17,6 +23,7 @@ return [
     'throttle' => '登入失敗次數太多。請 :seconds 後再試。',
     'not_authorized' => '您無權執行此操作',
     'signup_disabled' => '註冊當前已停用',
+    'signup_error' => 'An error occured trying to register the user',
     'back_homepage' => '回到主頁',
     'mfa_auth_otp' => '使用二次驗證裝置進行認證',
     'mfa_auth_webauthn' => '使用安全鑰匙驗證(WebAuthn)',
@@ -24,6 +31,7 @@ return [
     '2fa_wrong_validation' => '二次驗證失敗',
     '2fa_one_time_password' => '驗證碼',
     '2fa_recuperation_code' => '輸入二次驗證恢復碼',
+    '2fa_one_time_or_recuperation' => 'Enter a two factor authentication code or a recovery code',
     '2fa_otp_help' => '開啟您的二次驗證APP並複製驗證碼',
 
     'login_to_account' => '登入您的帳號',

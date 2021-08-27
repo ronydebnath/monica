@@ -42,8 +42,8 @@ class AuthControllerTest extends TestCase
             );
 
             $this->setEnvironmentValue([
-                'MOBILE_CLIENT_ID' => $client->id,
-                'MOBILE_CLIENT_SECRET' => $client->secret,
+                'PASSPORT_PASSWORD_GRANT_CLIENT_ID' => $client->id,
+                'PASSPORT_PASSWORD_GRANT_CLIENT_SECRET' => $client->secret,
             ]);
 
             $userPassword = 'password';
@@ -59,6 +59,41 @@ class AuthControllerTest extends TestCase
             $response->assertStatus(200);
 
             $response->assertJsonStructure($this->jsonStructureOAuthLogin);
+        } finally {
+            if ($client) {
+                $repository->delete($client);
+            }
+            if ($user) {
+                $user->account->delete();
+            }
+        }
+    }
+
+    public function test_oauth_login_bad_password()
+    {
+        $repository = new ClientRepository();
+        $client = null;
+        try {
+            $client = $repository->createPasswordGrantClient(
+                null, config('app.name'), config('app.url')
+            );
+
+            $this->setEnvironmentValue([
+                'PASSPORT_PASSWORD_GRANT_CLIENT_ID' => $client->id,
+                'PASSPORT_PASSWORD_GRANT_CLIENT_SECRET' => $client->secret,
+            ]);
+
+            $userPassword = 'password';
+            $user = factory(User::class)->create([
+                'password' => bcrypt($userPassword),
+            ]);
+
+            $response = $this->postClient(self::OAUTH_LOGIN_URL, [
+                'email' => $user->email,
+                'password' => 'wrongPassword',
+            ]);
+
+            $this->expectNotAuthorized($response);
         } finally {
             if ($client) {
                 $repository->delete($client);
@@ -100,8 +135,8 @@ class AuthControllerTest extends TestCase
             );
 
             $this->setEnvironmentValue([
-                'MOBILE_CLIENT_ID' => $client->id,
-                'MOBILE_CLIENT_SECRET' => $client->secret,
+                'PASSPORT_PASSWORD_GRANT_CLIENT_ID' => $client->id,
+                'PASSPORT_PASSWORD_GRANT_CLIENT_SECRET' => $client->secret,
             ]);
 
             $userPassword = 'password';

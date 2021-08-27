@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * ⚠️ Editing not allowed except for 'en' language.
+ *
+ * @see https://github.com/monicahq/monica/blob/master/docs/contribute/translate.md for translations.
+ */
+
 return [
 
     /*
@@ -13,7 +19,7 @@ return [
     |
     */
 
-    'accepted' => ':attribute חייב להתקבל.',
+    'accepted' => ':attribute חייב להיות מסומן.',
     'active_url' => ':attribute אינה כתובת תקנית.',
     'after' => ':attribute חייב להיות תאריך לאחר :date.',
     'after_or_equal' => ':attribute חייב להיות התאריך :date או אחריו.',
@@ -66,7 +72,7 @@ return [
     'json' => ':attribute חייב להיות מחרוזת JSON תקנית.',
     'lt' => [
         'numeric' => 'על ה :attribute להיות נמוך יותר מ- :value.',
-        'file' => 'על ה :attribute להיות קטן יותר מ- :value קילו-בתים.',
+        'file' => ':attribute חייב להיות קטן מ־:value קילובתים.',
         'string' => 'על ה :attribute להכיל פחות מ- :value תווים.',
         'array' => 'על ה :attribute לכלול פחות מ- :value פריטים.',
     ],
@@ -147,5 +153,14 @@ return [
     */
 
     'attributes' => [],
+
+    'vue' => [
+        'max' => [
+            'numeric' => '{field} לא יכול להיות גדול מהערך {max}.',
+            'string' => '{field} לא יכול לחרוג מעבר ל־{max} תווים.',
+        ],
+        'required' => '{field} הוא שדה חובה.',
+        'url' => '{field} אינה כתובת אתר תקנית.',
+    ],
 
 ];

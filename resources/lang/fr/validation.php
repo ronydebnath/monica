@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * ⚠️ Editing not allowed except for 'en' language.
+ *
+ * @see https://github.com/monicahq/monica/blob/master/docs/contribute/translate.md for translations.
+ */
+
 return [
 
     /*
@@ -147,5 +153,14 @@ return [
     */
 
     'attributes' => [],
+
+    'vue' => [
+        'max' => [
+            'numeric' => '{field} ne peut pas être plus grand que {max}.',
+            'string' => '{field} ne peut pas avoir plus de {max} caractères.',
+        ],
+        'required' => '{field} est obligatoire.',
+        'url' => '{field} n’est pas une URL valide.',
+    ],
 
 ];

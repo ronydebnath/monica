@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * ⚠️ Editing not allowed except for 'en' language.
+ *
+ * @see https://github.com/monicahq/monica/blob/master/docs/contribute/translate.md for translations.
+ */
+
 return [
     'journal_rate' => 'Com\'è andata la tua giornata? Puoi votare una volta al giorno.',
     'journal_come_back' => 'Grazie. Ritorna domani per valutare di nuovo la tua giornata.',
@@ -7,6 +13,7 @@ return [
     'journal_add' => 'Scrivi nel diario',
     'journal_edit' => 'Modifica una voce del diario',
     'journal_empty' => 'Diario vuoto',
+    'journal_created_at' => 'Creato il {date}',
     'journal_created_automatically' => 'Creata automaticamente',
     'journal_entry_type_journal' => 'Voce del diario',
     'journal_entry_type_activity' => 'Attività',

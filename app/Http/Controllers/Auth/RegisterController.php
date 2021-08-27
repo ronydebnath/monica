@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Foundation\Auth\RegistersUsers;
+use Illuminate\Validation\Rules\Password as PasswordRules;
 
 class RegisterController extends Controller
 {
@@ -75,7 +76,7 @@ class RegisterController extends Controller
             'last_name' => 'required|max:255',
             'first_name' => 'required|max:255',
             'email' => 'required|email|max:255|unique:users',
-            'password' => 'required|min:6|confirmed',
+            'password' => ['required', 'confirmed', PasswordRules::defaults()],
             'policy' => 'required',
         ]);
     }
@@ -102,18 +103,19 @@ class RegisterController extends Controller
                 RequestHelper::ip(),
                 $data['lang']
             );
+            /** @var User */
             $user = $account->users()->first();
 
             if (! $first) {
                 // send me an alert
-                dispatch(new SendNewUserAlert($user));
+                SendNewUserAlert::dispatch($user);
             }
 
             return $user;
         } catch (\Exception $e) {
-            Log::warning($e);
+            Log::error($e);
 
-            return null;
+            abort(500, trans('auth.signup_error'));
         }
     }
 
@@ -122,18 +124,17 @@ class RegisterController extends Controller
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  mixed  $user
+     * @return mixed
      */
     protected function registered(Request $request, $user)
     {
-        if (is_null($user)) {
-            return $user;
-        }
-
-        /** @var int $count */
-        $count = Account::count();
-        if (! config('monica.signup_double_optin') || $count == 1) {
-            // if signup_double_optin is disabled, skip the confirm email part
-            $user->markEmailAsVerified();
+        if (! is_null($user)) {
+            /** @var int $count */
+            $count = Account::count();
+            if (! config('monica.signup_double_optin') || $count == 1) {
+                // if signup_double_optin is disabled, skip the confirm email part
+                $user->markEmailAsVerified();
+            }
         }
     }
 }

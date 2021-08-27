@@ -1,45 +1,48 @@
 # Installing Monica (Generic) <!-- omit in toc -->
 
--   [Prerequisites](#prerequisites)
-    -   [Types of databases](#types-of-databases)
--   [Installation steps](#installation-steps)
-    -   [1. Clone the repository](#1-clone-the-repository)
-    -   [2. Setup the database](#2-setup-the-database)
-    -   [3. Configure Monica](#3-configure-monica)
-    -   [4. Configure cron job](#4-configure-cron-job)
-    -   [5. Configure Apache webserver](#5-configure-apache-webserver)
-    -   [6. Optional: Setup the queues with Redis, Beanstalk or Amazon SQS](#6-optional-setup-the-queues-with-redis-beanstalk-or-amazon-sqs)
-    -   [7. Optional: Setup the access tokens to use the API](#7-optional-setup-the-access-tokens-to-use-the-api)
-        -   [Generate the encryption keys](#generate-the-encryption-keys)
-        -   [Optional: Save the encryption keys as variable](#optional-save-the-encryption-keys-as-variable)
-        -   [Optional: Generate a Password grant client](#optional-generate-a-password-grant-client)
-    -   [Final step](#final-step)
+- [Prerequisites](#prerequisites)
+  - [Types of databases](#types-of-databases)
+- [Installation steps](#installation-steps)
+  - [1. Clone the repository](#1-clone-the-repository)
+  - [2. Setup the database](#2-setup-the-database)
+  - [3. Configure Monica](#3-configure-monica)
+  - [4. Configure cron job](#4-configure-cron-job)
+  - [5. Configure Apache webserver](#5-configure-apache-webserver)
+  - [6. Optional: Setup the queues with Redis, Beanstalk or Amazon SQS](#6-optional-setup-the-queues-with-redis-beanstalk-or-amazon-sqs)
+  - [7. Optional: Setup the access tokens to use the API](#7-optional-setup-the-access-tokens-to-use-the-api)
+    - [Generate the encryption keys](#generate-the-encryption-keys)
+    - [Optional: Save the encryption keys as variable](#optional-save-the-encryption-keys-as-variable)
+    - [Optional: Generate a Password grant client](#optional-generate-a-password-grant-client)
+  - [Final step](#final-step)
 
 ## Prerequisites
 
 If you don't want to use Docker, the best way to setup the project is to use the same configuration that [Homestead](https://laravel.com/docs/homestead) uses. Basically, Monica depends on the following:
 
 -   [Git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git)
--   PHP 7.2+
+-   PHP 7.4+
 -   [Composer](https://getcomposer.org/)
+-   [Node.js](https://nodejs.org)
+-   [Yarn](https://yarnpkg.com)
 -   [MySQL](https://www.mysql.com/)
 -   Optional: Redis or Beanstalk
 
 **Git:** Git should come pre-installed with your server. If it doesn't - use the installation instructions in the link.
 
-**PHP:** Install php7.2 minimum, with these extensions:
+**PHP:** Install php7.4 minimum, with these extensions:
 
--   curl
 -   bcmath
+-   curl
+-   dom
 -   gd
 -   gmp
 -   iconv
 -   intl
 -   json
--   pdo_mysql
 -   mbstring
 -   mysqli
 -   opcache
+-   pdo_mysql
 -   redis
 -   sodium
 -   xml
@@ -51,6 +54,15 @@ If you don't want to use Docker, the best way to setup the project is to use the
 php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
 php composer-setup.php --install-dir=/usr/local/bin/ --filename=composer
 php -r "unlink('composer-setup.php');"
+```
+
+**Node.js:** Install node.js 14+ minimum
+
+
+**Yarn:** Install yarn using npm
+
+```sh
+npm install --global yarn
 ```
 
 **Mysql:** Install Mysql 5.7+
@@ -76,7 +88,10 @@ You should check out a tagged version of Monica since `master` branch may not al
 
 ```sh
 cd /var/www/monica
-git checkout tags/v2.2.1
+# Get latest tags from GitHub
+git fetch
+# Clone the desired version
+git checkout tags/v2.18.0
 ```
 
 ### 2. Setup the database
@@ -90,13 +105,7 @@ mysql -u root -p
 Create a database called 'monica'.
 
 ```sql
-CREATE DATABASE monica;
-```
-
-or if you want to support all character (like emojis):
-
-```sql
-CREATE DATABASE monica CHARACTER SET utf8 COLLATE utf8_general_ci;
+CREATE DATABASE monica CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 ```
 
 Create a user called 'monica' and its password 'strongpassword'.
@@ -105,7 +114,7 @@ Create a user called 'monica' and its password 'strongpassword'.
 CREATE USER 'monica'@'localhost' IDENTIFIED BY 'strongpassword';
 ```
 
-We have to authorize the new user on the monica db so that he is allowed to change the database.
+We have to authorize the new user on the `monica` db so that he is allowed to change the database.
 
 ```sql
 GRANT ALL ON monica.* TO 'monica'@'localhost';
@@ -127,9 +136,10 @@ exit
     - set `DB_USERNAME` and `DB_PASSWORD` with the settings used behind.
     - configure a [mailserver](/docs/installation/mail.md) for registration & reminders to work correctly.
     - set the `APP_ENV` variable to `production`, `local` is only used for the development version. Beware: setting `APP_ENV` to `production` will force HTTPS. Skip this if you're running Monica locally.
-3. Run `composer install --no-interaction --no-suggest --no-dev --ignore-platform-reqs` to install all packages.
-4. Run `php artisan key:generate` to generate an application key. This will set `APP_KEY` with the right value automatically.
-5. Run `php artisan setup:production -v` to run the migrations, seed the database and symlink folders.
+3. Run `composer install --no-interaction --no-dev` to install all packages.
+4. Run `yarn install` to install frontend packages, then `yarn run production` to build the assets (js, css).
+5. Run `php artisan key:generate` to generate an application key. This will set `APP_KEY` with the right value automatically.
+6. Run `php artisan setup:production -v` to run the migrations, seed the database and symlink folders.
 
 The `setup:production` command will run migrations scripts for database, and flush all cache for config, route, and view, as an optimization process.
 As the configuration of the application is cached, any update on the `.env` file will not be detected after that. You may have to run `php artisan config:cache` manually after every update of `.env` file.
@@ -149,7 +159,7 @@ crontab -u www-data -e
 2. Then, in the text editor window you just opened, copy the following:
 
 ```
-* * * * *   /usr/bin/php /var/www/monica/artisan schedule:run
+* * * * *   /usr/bin/php /var/www/monica/artisan schedule:run >> /dev/null 2>&1
 ```
 
 ### 5. Configure Apache webserver
@@ -236,7 +246,7 @@ Some process monitor such as [Supervisor](https://laravel.com/docs/master/queues
 
 ### 7. Optional: Setup the access tokens to use the API
 
-In order to use the Monica API for your instance, you will have to instanciate encryption keys first.
+In order to use the Monica API for your instance, you will have to instantiate encryption keys first.
 
 #### Generate the encryption keys
 
@@ -298,8 +308,8 @@ Client secret: zsfOHGnEbadlBP8kLsjOV8hMpHAxb0oAhenfmSqq
 
 -   Copy the two values into two new environment variables of your `.env` file:
 
-    -   The value of `Client ID` in a `MOBILE_CLIENT_ID` variable
-    -   The value of `Client secret` in a `MOBILE_CLIENT_SECRET` variable
+    -   The value of `Client ID` in a `PASSPORT_PASSWORD_GRANT_CLIENT_ID` variable
+    -   The value of `Client secret` in a `PASSPORT_PASSWORD_GRANT_CLIENT_SECRET` variable
 
 -   OAuth login can be access on `http://localhost/oauth/login`.
 

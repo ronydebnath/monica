@@ -21,7 +21,9 @@ class IntroductionsController extends Controller
      */
     public function edit(Contact $contact)
     {
-        $contacts = auth()->user()->account->contacts()
+        $contact->throwInactive();
+
+        $contacts = $contact->siblingContacts()
                         ->real()
                         ->active()
                         ->get();
@@ -41,6 +43,8 @@ class IntroductionsController extends Controller
      */
     public function update(Request $request, Contact $contact)
     {
+        $contact->throwInactive();
+
         $contact = app(UpdateContactIntroduction::class)->execute([
             'account_id' => auth()->user()->account_id,
             'contact_id' => $contact->id,

@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * ⚠️ Editing not allowed except for 'en' language.
+ *
+ * @see https://github.com/monicahq/monica/blob/master/docs/contribute/translate.md for translations.
+ */
+
 return [
 
     /*
@@ -17,6 +23,7 @@ return [
     'throttle' => 'عدد كبير جدا من محاولات الدخول. يرجى المحاولة مرة أخرى بعد :seconds ثانية.',
     'not_authorized' => 'ليس لديك الصلاحية لتنفيذ هذا الأمر',
     'signup_disabled' => 'تسجيل الإشتراك معطل حالياً',
+    'signup_error' => 'An error occured trying to register the user',
     'back_homepage' => 'العودة إلى الصفحة الرئيسية',
     'mfa_auth_otp' => 'المصادقة مع جهاز العامل الثنائي الخاص بك',
     'mfa_auth_webauthn' => 'Authenticate with a security key (WebAuthn)',
@@ -24,6 +31,7 @@ return [
     '2fa_wrong_validation' => 'فشلت المصادقة الثنائية.',
     '2fa_one_time_password' => 'رمز المصادقة الثنائية',
     '2fa_recuperation_code' => 'أدخل رمز استرداد العامل الثنائي',
+    '2fa_one_time_or_recuperation' => 'Enter a two factor authentication code or a recovery code',
     '2fa_otp_help' => 'قم بفتح تطبيق المصادقة الثنائية في هاتفك و انسخ الرمز',
 
     'login_to_account' => 'تسجيل الدخول إلى حسابك',

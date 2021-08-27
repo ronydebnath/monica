@@ -2,7 +2,6 @@
 
 namespace App\Models\Journal;
 
-use Parsedown;
 use App\Helpers\DateHelper;
 use App\Traits\Journalable;
 use App\Models\Account\Account;
@@ -60,17 +59,6 @@ class Entry extends Model implements IsJournalableInterface
     }
 
     /**
-     * Get the Entry post.
-     *
-     * @param  string  $value
-     * @return string
-     */
-    public function getPostAttribute($value)
-    {
-        return (new Parsedown())->text($value);
-    }
-
-    /**
      * Get all the information of the Entry for the journal.
      * @return array
      */
@@ -87,6 +75,7 @@ class Entry extends Model implements IsJournalableInterface
             'month_name' => mb_convert_case(DateHelper::getShortMonth($this->date), MB_CASE_UPPER, 'UTF-8'),
             'year' => $this->date->year,
             'date' => $this->date,
+            'created_at' => DateHelper::getShortDateWithTime($this->created_at),
         ];
     }
 }

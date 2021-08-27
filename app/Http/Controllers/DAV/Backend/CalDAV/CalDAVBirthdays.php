@@ -39,7 +39,7 @@ class CalDAVBirthdays extends AbstractCalDAVBackend
     /**
      * Extension for Calendar objects.
      *
-     * @var string
+     * @return string
      */
     public function getExtension()
     {
@@ -49,27 +49,27 @@ class CalDAVBirthdays extends AbstractCalDAVBackend
     /**
      * Datas for this date.
      *
-     * @param mixed $date
+     * @param mixed $obj
      * @return array
      */
-    public function prepareData($date)
+    public function prepareData($obj)
     {
-        if ($date instanceof SpecialDate) {
+        if ($obj instanceof SpecialDate) {
             try {
                 $vcal = app(ExportVCalendar::class)
                     ->execute([
                         'account_id' => Auth::user()->account_id,
-                        'special_date_id' => $date->id,
+                        'special_date_id' => $obj->id,
                     ]);
 
                 $calendardata = $vcal->serialize();
 
                 return [
-                    'id' => $date->id,
-                    'uri' => $this->encodeUri($date),
+                    'id' => $obj->id,
+                    'uri' => $this->encodeUri($obj),
                     'calendardata' => $calendardata,
                     'etag' => '"'.md5($calendardata).'"',
-                    'lastmodified' => $date->updated_at->timestamp,
+                    'lastmodified' => $obj->updated_at->timestamp,
                 ];
             } catch (\Exception $e) {
                 Log::debug(__CLASS__.' prepareData: '.(string) $e);
@@ -95,10 +95,11 @@ class CalDAVBirthdays extends AbstractCalDAVBackend
     /**
      * Returns the date for the specific uuid.
      *
+     * @param string|null $collectionId
      * @param string  $uuid
      * @return mixed
      */
-    public function getObjectUuid($uuid)
+    public function getObjectUuid($collectionId, $uuid)
     {
         return SpecialDate::where([
             'account_id' => Auth::user()->account_id,
@@ -111,10 +112,10 @@ class CalDAVBirthdays extends AbstractCalDAVBackend
      *
      * @return \Illuminate\Support\Collection
      */
-    public function getObjects()
+    public function getObjects($collectionId)
     {
-        $contacts = Auth::user()->account
-                    ->contacts()
+        // We only return the birthday of default addressBook
+        $contacts = Auth::user()->account->contacts()
                     ->real()
                     ->active()
                     ->get();
@@ -130,7 +131,7 @@ class CalDAVBirthdays extends AbstractCalDAVBackend
     /**
      * @return string|null
      */
-    public function updateOrCreateCalendarObject($objectUri, $calendarData): ?string
+    public function updateOrCreateCalendarObject($calendarId, $objectUri, $calendarData): ?string
     {
         return null;
     }

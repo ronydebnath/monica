@@ -105,9 +105,11 @@
           v-model.lazy="hasBirthdayReminder"
           :name="'addReminder'"
           :value="'addReminder'"
-          :dclass="[ dirltr ? 'mr2' : 'ml2' ]"
+          :dclass="[ 'flex', dirltr ? 'mr2' : 'ml2' ]"
         >
-          {{ $t('people.people_add_reminder_for_birthday') }}
+          <template slot="label">
+            {{ $t('people.people_add_reminder_for_birthday') }}
+          </template>
         </form-checkbox>
       </div>
     </div>
@@ -185,7 +187,6 @@ export default {
           numeric,
         }
       };
-      break;
     case 'exact':
       return {
         selectedDate: {
@@ -193,7 +194,6 @@ export default {
           before: before(moment())
         }
       };
-      break;
     }
     return null;
   },

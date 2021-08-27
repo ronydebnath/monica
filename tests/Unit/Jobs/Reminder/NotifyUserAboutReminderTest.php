@@ -100,7 +100,7 @@ class NotifyUserAboutReminderTest extends TestCase
         Notification::assertSentTo(
             $user,
             UserNotified::class,
-            function ($notification, $channels) use ($reminderOutbox, $reminder, $user, $contact) {
+            function ($notification, $channels) use ($reminder, $user, $contact) {
                 $mailData = $notification->toMail($user)->toArray();
                 $this->assertEquals("Reminder for {$contact->name}", $mailData['subject']);
                 $this->assertEquals("Hi {$user->first_name}", $mailData['greeting']);
@@ -231,43 +231,6 @@ class NotifyUserAboutReminderTest extends TestCase
         $this->assertDatabaseHas('reminder_outbox', [
             'account_id' => $user->account_id,
             'reminder_id' => $reminder->id,
-        ]);
-    }
-
-    /** @test */
-    public function it_creates_a_reminder_sent_object()
-    {
-        Notification::fake();
-        Carbon::setTestNow(Carbon::create(2017, 1, 1, 7, 0, 0));
-
-        $account = factory(Account::class)->create([
-            'default_time_reminder_is_sent' => '07:00',
-        ]);
-        $contact = factory(Contact::class)->create(['account_id' => $account->id]);
-        $user = factory(User::class)->create(['account_id' => $account->id]);
-        $reminder = factory(Reminder::class)->create([
-            'account_id' => $account->id,
-            'contact_id' => $contact->id,
-            'initial_date' => '2017-01-01',
-            'title' => 'fake text saying nothing',
-            'frequency_type' => 'year',
-            'frequency_number' => 1,
-        ]);
-        $reminderOutbox = factory(ReminderOutbox::class)->create([
-            'account_id' => $user->account_id,
-            'reminder_id' => $reminder->id,
-            'user_id' => $user->id,
-            'planned_date' => '2017-01-01',
-        ]);
-
-        NotifyUserAboutReminder::dispatch($reminderOutbox);
-
-        $this->assertDatabaseHas('reminder_sent', [
-            'account_id' => $user->account_id,
-            'reminder_id' => $reminder->id,
-            'user_id' => $user->id,
-            'planned_date' => '2017-01-01',
-            'nature' => 'reminder',
         ]);
     }
 }

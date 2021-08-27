@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Foundation\Auth\RedirectsUsers;
+use Illuminate\Validation\Rules\Password as PasswordRules;
 
 class InvitationController extends Controller
 {
@@ -68,7 +69,7 @@ class InvitationController extends Controller
             'first_name' => 'required|max:255',
             'email' => 'required|email|max:255|unique:users',
             'email_security' => 'required',
-            'password' => 'required|min:6|confirmed',
+            'password' => ['required', 'confirmed', PasswordRules::defaults()],
             'policy' => 'required',
         ]);
     }
@@ -98,10 +99,13 @@ class InvitationController extends Controller
 
         $invitation->delete();
 
-        Auth::guard()->login($user);
+        /** @var \Illuminate\Contracts\Auth\StatefulGuard */
+        $guard = Auth::guard();
+        $guard->login($user);
 
-        return $this->registered($request, $user)
-                        ?: redirect($this->redirectPath());
+        $this->registered($request, $user);
+
+        return redirect($this->redirectPath());
     }
 
     /**
@@ -126,7 +130,7 @@ class InvitationController extends Controller
         $user->save();
 
         // send me an alert
-        dispatch(new SendNewUserAlert($user));
+        SendNewUserAlert::dispatch($user);
 
         return $user;
     }
@@ -136,6 +140,7 @@ class InvitationController extends Controller
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  mixed  $user
+     * @return void
      */
     protected function registered(Request $request, $user)
     {

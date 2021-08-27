@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * ⚠️ Editing not allowed except for 'en' language.
+ *
+ * @see https://github.com/monicahq/monica/blob/master/docs/contribute/translate.md for translations.
+ */
+
 return [
     'journal_rate' => '今天過得怎麼樣？你可以每天給它一次評價。',
     'journal_come_back' => '謝謝. 明天再來給你的一天評價一下。',
@@ -7,6 +13,7 @@ return [
     'journal_add' => '新增日記條目',
     'journal_edit' => '編輯日記條目',
     'journal_empty' => '暫無日記',
+    'journal_created_at' => 'Created at {date}',
     'journal_created_automatically' => '自動建立',
     'journal_entry_type_journal' => '記錄條目',
     'journal_entry_type_activity' => '活動',

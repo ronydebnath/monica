@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * ⚠️ Editing not allowed except for 'en' language.
+ *
+ * @see https://github.com/monicahq/monica/blob/master/docs/contribute/translate.md for translations.
+ */
+
 return [
 
     /*
@@ -17,8 +23,8 @@ return [
     'sent' => 'Si el correo eletrónico que ingresaste existe en nuestros registros te hemos enviado un correo para restablecer tu contraseña.',
     'token' => 'Este token para reestablecer la contraseña no es válido.',
     'user' => 'Si el correo eletrónico que ingresaste existe en nuestros registros te hemos enviado un correo para restablecer tu contraseña.',
-    'changed' => 'Password changed successfully.',
+    'changed' => 'Contraseña cambiada con éxito.',
     'invalid' => 'La contraseña que ingresaste no es correcta.',
-    'throttled' => 'Please wait before retrying.',
+    'throttled' => 'Por favor, espera antes de intentarlo de nuevo.',
 
 ];

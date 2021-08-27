@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * ⚠️ Editing not allowed except for 'en' language.
+ *
+ * @see https://github.com/monicahq/monica/blob/master/docs/contribute/translate.md for translations.
+ */
+
 return [
 
     /*
@@ -17,6 +23,7 @@ return [
     'throttle' => 'Te veel inlogpogingen. Probeer opnieuw in :seconds seconden.',
     'not_authorized' => 'Je bent niet gemachtigd om dit te doen',
     'signup_disabled' => 'Registratie is momenteel uitgeschakeld',
+    'signup_error' => 'Er is een fout opgetreden bij het registreren van de gebruiker',
     'back_homepage' => 'Terug naar homepage',
     'mfa_auth_otp' => 'Verifieer met je tweestapsverificatie apparaat',
     'mfa_auth_webauthn' => 'Authenticeer met een beveiligingssleutel (WebAuthn)',
@@ -24,6 +31,7 @@ return [
     '2fa_wrong_validation' => 'De tweestapsverificatie is mislukt.',
     '2fa_one_time_password' => 'Tweestapsverificatiecode',
     '2fa_recuperation_code' => 'Voer een tweestapsverificatiecode in',
+    '2fa_one_time_or_recuperation' => 'Voer een tweestapsverificatiecode of een herstelcode in',
     '2fa_otp_help' => 'Open je tweestapsverificatiecode-app en kopieer de code',
 
     'login_to_account' => 'Inloggen op je account',

@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * ⚠️ Editing not allowed except for 'en' language.
+ *
+ * @see https://github.com/monicahq/monica/blob/master/docs/contribute/translate.md for translations.
+ */
+
 return [
 
     /*
@@ -17,6 +23,7 @@ return [
     'throttle' => 'Příliš mnoho pokusů o přihlášení. Zkuste to prosím znovu za :seconds vteřin.',
     'not_authorized' => 'Nejste oprávněni provést tuto akci',
     'signup_disabled' => 'Nové registrace jsou aktuálně zastaveny',
+    'signup_error' => 'An error occured trying to register the user',
     'back_homepage' => 'Zpět na domovskou stránku',
     'mfa_auth_otp' => 'Authenticate with your two factor device',
     'mfa_auth_webauthn' => 'Authenticate with a security key (WebAuthn)',
@@ -24,6 +31,7 @@ return [
     '2fa_wrong_validation' => 'The two factor authentication has failed.',
     '2fa_one_time_password' => 'Two factor authentication code',
     '2fa_recuperation_code' => 'Enter a two factor recovery code',
+    '2fa_one_time_or_recuperation' => 'Enter a two factor authentication code or a recovery code',
     '2fa_otp_help' => 'Open up your two factor authentication mobile app and copy the code',
 
     'login_to_account' => 'Login to your account',
