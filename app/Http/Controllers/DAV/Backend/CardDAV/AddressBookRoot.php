@@ -40,8 +40,9 @@ class AddressBookRoot extends BaseAddressBookRoot implements IACL
      * at least contain a uri item. Other properties may or may not be
      * supplied by the authentication backend.
      *
-     * @param array $principal
+     * @param  array  $principal
      * @return \Sabre\DAV\INode
+     * @psalm-suppress ParamNameMismatch
      */
     public function getChildForPrincipal(array $principal)
     {

@@ -2,13 +2,18 @@
 
 namespace App\Models\Contact;
 
+use App\Traits\HasUuid;
 use App\Helpers\StorageHelper;
 use App\Models\Account\Account;
 use App\Models\ModelBinding as Model;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Contracts\Filesystem\FileNotFoundException;
 
 class Document extends Model
 {
+    use HasUuid;
+
     /**
      * The table associated with the model.
      *
@@ -19,14 +24,14 @@ class Document extends Model
     /**
      * The attributes that aren't mass assignable.
      *
-     * @var array
+     * @var array<string>|bool
      */
     protected $guarded = ['id'];
 
     /**
      * The attributes that should be cast to native types.
      *
-     * @var array
+     * @var array<string, string>
      */
     protected $casts = [
         'number_of_downloads' => 'integer',
@@ -53,7 +58,7 @@ class Document extends Model
     }
 
     /**
-     * Get the downloadl link.
+     * Get the download link.
      *
      * @return string
      */
@@ -64,5 +69,42 @@ class Document extends Model
         }
 
         return route('storage', ['file' => $this->new_filename]);
+    }
+
+    /**
+     * Gets the data-url format of the document.
+     *
+     * @return string|null
+     */
+    public function dataUrl(): ?string
+    {
+        try {
+            $url = $this->new_filename;
+            $file = StorageHelper::disk(config('filesystems.default'))->get($url);
+
+            return sprintf('data:%s;base64,%s',
+                $this->mime_type,
+                base64_encode($file)
+            );
+        } catch (FileNotFoundException $e) {
+            return null;
+        }
+    }
+
+    /**
+     * Delete the model from the database.
+     *
+     * @return bool|null
+     */
+    public function delete()
+    {
+        try {
+            Storage::disk(config('filesystems.default'))
+                ->delete($this->new_filename);
+        } catch (FileNotFoundException $e) {
+            // continue
+        }
+
+        return parent::delete();
     }
 }

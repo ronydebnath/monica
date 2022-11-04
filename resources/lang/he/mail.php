@@ -3,7 +3,7 @@
 /**
  * ⚠️ Editing not allowed except for 'en' language.
  *
- * @see https://github.com/monicahq/monica/blob/master/docs/contribute/translate.md for translations.
+ * @see https://github.com/monicahq/monica/blob/main/docs/contribute/translate.md for translations.
  */
 
 return [
@@ -45,4 +45,9 @@ return [
     'invitation_link' => 'כדי לקבל את ההזמנה, יש ללחוץ על הקישור להלן:',
     'invitation_button' => 'קבלת ההזמנה',
     'invitation_expiration' => 'הקישור יפוג תוך :count ימים.',
+
+    'export_title' => 'הייצוא שלך מוכן',
+    'export_description' => 'ביקשת ייצוא נתונים ב־:date. הוא מוכן כעת להורדה.',
+    'export_download' => 'הורדת הייצוא',
+
 ];

@@ -10,7 +10,7 @@ use Illuminate\Support\Carbon;
 use App\Models\Contact\Contact;
 use App\Models\Contact\Document;
 use Illuminate\Support\Facades\Response;
-use League\Flysystem\FileNotFoundException;
+use League\Flysystem\FilesystemException;
 
 class StorageController extends Controller
 {
@@ -22,8 +22,8 @@ class StorageController extends Controller
     /**
      * Download file with authorization.
      *
-     * @param Request $request
-     * @param string $file
+     * @param  Request  $request
+     * @param  string  $file
      * @return \Illuminate\Http\Response|\Symfony\Component\HttpFoundation\StreamedResponse|null
      */
     public function show(Request $request, string $file)
@@ -45,7 +45,7 @@ class StorageController extends Controller
             }
 
             return $disk->response($file, $filename, $headers);
-        } catch (FileNotFoundException $e) {
+        } catch (FilesystemException $e) {
             abort(404);
         }
     }
@@ -53,8 +53,8 @@ class StorageController extends Controller
     /**
      * Get the filename for this file.
      *
-     * @param Request $request
-     * @param string $file
+     * @param  Request  $request
+     * @param  string  $file
      * @return string
      */
     private function getFilename(Request $request, string $file): string
@@ -104,8 +104,8 @@ class StorageController extends Controller
      * Check for If-Modified-Since and If-Unmodified-Since conditions.
      * Return true if the condition does not match.
      *
-     * @param Request $request
-     * @param Carbon $lastModified  Last modified date
+     * @param  Request  $request
+     * @param  Carbon  $lastModified  Last modified date
      * @return bool
      */
     private function checkConditions(Request $request, Carbon $lastModified): bool

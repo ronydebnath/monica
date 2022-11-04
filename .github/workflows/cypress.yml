@@ -5,8 +5,11 @@ on:
     types: [labeled, opened, synchronize, reopened]
 
 env:
-  node-version: 15
+  node-version: 18
 
+concurrency:
+  group: Cypress tests ${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   cypress:
@@ -17,13 +20,13 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        php-version: [7.4]
+        php-version: ['8.1']
         browser: [chrome]
         containers: [1, 2, 3, 4, 5, 6, 7, 8]
 
     steps:
       - name: Checkout sources
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Setup PHP ${{ matrix.php-version }}
         uses: shivammathur/setup-php@v2
@@ -44,9 +47,9 @@ jobs:
 
       - name: Get Composer Cache Directory
         id: composer-cache
-        run: echo "::set-output name=dir::$(composer config cache-files-dir)"
+        run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
       - name: Cache composer files
-        uses: actions/cache@v2.1.6
+        uses: actions/cache@v3
         with:
           path: ${{ steps.composer-cache.outputs.dir }}
           key: ${{ runner.os }}-composer-${{ matrix.php-version }}-${{ hashFiles('**/composer.lock') }}
@@ -60,14 +63,14 @@ jobs:
 
     # Yarn
       - name: Setup Node.js
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v3
         with:
           node-version: ${{ env.node-version }}
       - name: Get yarn cache directory path
         id: yarn-cache
-        run: echo "::set-output name=dir::$(yarn cache dir)"
+        run: echo "dir=$(yarn cache dir)" >> $GITHUB_OUTPUT
       - name: Cache yarn files
-        uses: actions/cache@v2.1.6
+        uses: actions/cache@v3
         with:
           path: ${{ steps.yarn-cache.outputs.dir }}
           key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}

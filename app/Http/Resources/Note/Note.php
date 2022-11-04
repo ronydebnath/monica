@@ -14,13 +14,14 @@ class Note extends JsonResource
     /**
      * Transform the resource into an array.
      *
-     * @param  \Illuminate\Http\Request $request
-     * @return array
+     * @param  \Illuminate\Http\Request  $request
+     * @return array|\Illuminate\Contracts\Support\Arrayable|\JsonSerializable
      */
     public function toArray($request)
     {
         return [
             'id' => $this->id,
+            'uuid' => $this->uuid,
             'object' => 'note',
             'body' => $this->body,
             'is_favorited' => (bool) $this->is_favorited,

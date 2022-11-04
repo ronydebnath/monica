@@ -83,6 +83,7 @@ class ApiController extends Controller
 
     /**
      * Default request to the API.
+     *
      * @return \Illuminate\Http\JsonResponse
      */
     public function success()
@@ -103,6 +104,7 @@ class ApiController extends Controller
                 'journal_url' => route('api.journal'),
                 'notes_url' => route('api.notes'),
                 'relationships_url' => route('api.relationships', ['contact' => ':contactId']),
+                'reminders_url' => route('api.reminders'),
                 'statistics_url' => route('api.statistics'),
             ],
         ]);
@@ -117,7 +119,7 @@ class ApiController extends Controller
     }
 
     /**
-     * @param string $with
+     * @param  string  $with
      * @return self
      */
     public function setWithParameter($with)
@@ -136,7 +138,7 @@ class ApiController extends Controller
     }
 
     /**
-     * @param int $limit
+     * @param  int  $limit
      * @return self
      */
     public function setLimitPerPage($limit)
@@ -148,6 +150,7 @@ class ApiController extends Controller
 
     /**
      * Get the sort direction parameter.
+     *
      * @return string
      */
     public function getSortDirection()
@@ -164,7 +167,7 @@ class ApiController extends Controller
     }
 
     /**
-     * @param string $criteria
+     * @param  string  $criteria
      * @return self
      */
     public function setSortCriteria($criteria)

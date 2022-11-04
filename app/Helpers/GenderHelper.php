@@ -16,7 +16,7 @@ class GenderHelper
      */
     public static function getGendersInput()
     {
-        $genders = auth()->user()->account->genders->map(function ($gender) {
+        $genders = auth()->user()->account->genders->map(function (Gender $gender): array {
             return [
                 'id' => $gender->id,
                 'name' => $gender->name,
@@ -32,9 +32,9 @@ class GenderHelper
      * Replaces a specific gender of all the contacts in the account with another
      * gender.
      *
-     * @param Account $account
-     * @param Gender $genderToDelete
-     * @param Gender $genderToReplaceWith
+     * @param  Account  $account
+     * @param  Gender  $genderToDelete
+     * @param  Gender  $genderToReplaceWith
      * @return bool
      */
     public static function replace(Account $account, Gender $genderToDelete, Gender $genderToReplaceWith): bool

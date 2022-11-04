@@ -2,6 +2,7 @@
 
 namespace App\Models\Contact;
 
+use App\Traits\HasUuid;
 use App\Models\Account\Photo;
 use App\Models\Account\Account;
 use App\Traits\AmountFormatter;
@@ -19,24 +20,25 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
  * @property string $comment
  * @property string $url
  * @property Contact $is_for
+ *
  * @method static Builder offered()
  * @method static Builder isIdea()
  */
 class Gift extends Model
 {
-    use AmountFormatter;
+    use AmountFormatter, HasUuid;
 
     /**
      * The attributes that aren't mass assignable.
      *
-     * @var array
+     * @var array<string>|bool
      */
     protected $guarded = ['id'];
 
     /**
      * The attributes that should be mutated to dates.
      *
-     * @var array
+     * @var array<string>
      */
     protected $dates = [
         'date',
@@ -45,7 +47,7 @@ class Gift extends Model
     /**
      * The attributes that should be cast to native types.
      *
-     * @var array
+     * @var array<string, string>
      */
     protected $casts = [
     ];
@@ -93,7 +95,7 @@ class Gift extends Model
     /**
      * Limit results to already offered gifts.
      *
-     * @param Builder $query
+     * @param  Builder  $query
      * @return Builder
      */
     public function scopeOffered(Builder $query)
@@ -104,7 +106,7 @@ class Gift extends Model
     /**
      * Limit results to gifts at the idea stage.
      *
-     * @param Builder $query
+     * @param  Builder  $query
      * @return Builder
      */
     public function scopeIsIdea(Builder $query)
@@ -126,8 +128,7 @@ class Gift extends Model
     /**
      * Set the recipient for the gift.
      *
-     * @param int $value
-     *
+     * @param  int  $value
      * @return void
      */
     public function setRecipientAttribute($value): void

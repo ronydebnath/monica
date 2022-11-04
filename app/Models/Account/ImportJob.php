@@ -8,13 +8,14 @@ use Illuminate\Support\Arr;
 use App\Helpers\AccountHelper;
 use Sabre\VObject\Component\VCard;
 use App\Services\VCard\ImportVCard;
+use League\Flysystem\UnableToReadFile;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
+use League\Flysystem\UnableToDeleteFile;
 use Illuminate\Validation\ValidationException;
 use Sabre\VObject\Splitter\VCard as VCardReader;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Contracts\Filesystem\FileNotFoundException;
 
 /**
  * @property int $id
@@ -55,14 +56,14 @@ class ImportJob extends Model
     /**
      * The attributes that aren't mass assignable.
      *
-     * @var array
+     * @var array<string>|bool
      */
     protected $guarded = ['id'];
 
     /**
      * The attributes that should be mutated to dates.
      *
-     * @var array
+     * @var array<string>
      */
     protected $dates = ['started_at', 'ended_at'];
 
@@ -149,8 +150,7 @@ class ImportJob extends Model
     /**
      * Mark the import job as failed.
      *
-     * @param string $reason
-     *
+     * @param  string  $reason
      * @return void
      */
     private function fail(string $reason): void
@@ -171,7 +171,7 @@ class ImportJob extends Model
     {
         try {
             $this->physicalFile = Storage::disk(config('filesystems.default'))->readStream($this->filename);
-        } catch (FileNotFoundException $exception) {
+        } catch (UnableToReadFile $exception) {
             $this->fail(trans('settings.import_vcard_file_not_found'));
 
             return false;
@@ -187,7 +187,13 @@ class ImportJob extends Model
      */
     private function deletePhysicalFile(): bool
     {
-        if (! Storage::disk(config('filesystems.default'))->delete($this->filename)) {
+        try {
+            if (Storage::disk(config('filesystems.default'))->delete($this->filename) === false) {
+                $this->fail(trans('settings.import_vcard_file_not_found'));
+
+                return false;
+            }
+        } catch (UnableToDeleteFile $exception) {
             $this->fail(trans('settings.import_vcard_file_not_found'));
 
             return false;
@@ -203,13 +209,15 @@ class ImportJob extends Model
      */
     private function getEntries()
     {
-        $this->entries = new VCardReader($this->physicalFile, Reader::OPTION_FORGIVING + Reader::OPTION_IGNORE_INVALID_LINES);
+        if ($this->physicalFile !== null) {
+            $this->entries = new VCardReader($this->physicalFile, Reader::OPTION_FORGIVING + Reader::OPTION_IGNORE_INVALID_LINES);
+        }
     }
 
     /**
      * Process all entries contained in the vCard file.
      *
-     * @param string $behaviour
+     * @param  string  $behaviour
      * @return void
      */
     private function processEntries($behaviour = ImportVCard::BEHAVIOUR_ADD)
@@ -239,8 +247,8 @@ class ImportJob extends Model
     /**
      * Process a single vCard entry.
      *
-     * @param  string|VCard $entry
-     * @param  string $behaviour
+     * @param  string|VCard  $entry
+     * @param  string  $behaviour
      * @return void
      */
     private function processSingleEntry($entry, $behaviour = ImportVCard::BEHAVIOUR_ADD): void
@@ -271,8 +279,8 @@ class ImportJob extends Model
     /**
      * Skip the current entry.
      *
-     * @param  string $name
-     * @param  string $reason
+     * @param  string  $name
+     * @param  string  $reason
      * @return void
      */
     private function skipEntry($name, $reason = null): void
@@ -284,9 +292,9 @@ class ImportJob extends Model
     /**
      * File an import job report for the current entry.
      *
-     * @param  string $name
-     * @param  bool $status
-     * @param  string $reason
+     * @param  string  $name
+     * @param  bool  $status
+     * @param  string  $reason
      * @return void
      */
     private function fileImportJobReport($name, $status, $reason = null): void

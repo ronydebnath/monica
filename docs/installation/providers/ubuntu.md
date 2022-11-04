@@ -20,7 +20,7 @@ Monica depends on the following:
 
 -   [Apache httpd webserver](https://httpd.apache.org/)
 -   [Git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git)
--   PHP 7.4+
+-   PHP 8.1+
 -   [Composer](https://getcomposer.org/)
 -   [Node.js](https://nodejs.org)
 -   [Yarn](https://yarnpkg.com)
@@ -42,22 +42,22 @@ sudo apt update
 sudo apt install -y apache2
 ```
 
-**PHP 7.4+:**
+**PHP 8.1+:**
 
 First add this PPA repository:
 
 ```sh
-sudo apt-get install -y software-properties-common
+sudo apt install -y software-properties-common
 sudo add-apt-repository ppa:ondrej/php
 ```
 
-Then install php 7.4 with these extensions:
+Then install php 8.1 with these extensions:
 
 ```sh
 sudo apt update
-sudo apt install -y php7.4 php7.4-bcmath php7.4-cli php7.4-curl php7.4-common \
-    php7.4-fpm php7.4-gd php7.4-gmp php7.4-intl php7.4-json php7.4-mbstring \
-    php7.4-mysql php7.4-opcache php7.4-redis php7.4-xml php7.4-zip
+sudo apt install -y php8.1 php8.1-bcmath php8.1-cli php8.1-curl php8.1-common \
+    php8.1-fpm php8.1-gd php8.1-gmp php8.1-intl php8.1-json php8.1-mbstring \
+    php8.1-mysql php8.1-opcache php8.1-redis php8.1-xml php8.1-zip
 ```
 
 **Composer:** After you're done installing PHP, you'll need the [Composer](https://getcomposer.org/download/) dependency manager.
@@ -74,7 +74,7 @@ rm -f composer-setup.php
 **Node.js:** Install node.js with package manager.
 
 ```sh
-curl -fsSL https://deb.nodesource.com/setup_14.x | sudo -E bash -
+curl -fsSL https://deb.nodesource.com/setup_16.x | sudo -E bash -
 sudo apt install -y nodejs
 ```
 
@@ -108,7 +108,7 @@ cd /var/www
 git clone https://github.com/monicahq/monica.git
 ```
 
-You should check out a tagged version of Monica since `master` branch may not always be stable. Find the latest official version on the [release page](https://github.com/monicahq/monica/releases):
+You should check out a tagged version of Monica since `main` branch may not always be stable. Find the latest official version on the [release page](https://github.com/monicahq/monica/releases):
 
 ```sh
 cd /var/www/monica
@@ -170,7 +170,7 @@ exit
 
 ### 4. Configure cron job
 
-Monica requires some background processes to continuously run. The list of things Monica does in the background is described [here](https://github.com/monicahq/monica/blob/master/app/Console/Kernel.php#L33).
+Monica requires some background processes to continuously run. The list of things Monica does in the background is described [here](https://github.com/monicahq/monica/blob/main/app/Console/Kernel.php#L33).
 Basically those crons are needed to send reminder emails and check if a new version is available.
 To do this, setup a cron that runs every minute that triggers the following command `php artisan schedule:run`.
 
@@ -233,10 +233,10 @@ Then, in the `nano` text editor window you just opened, copy the following - swa
 sudo a2dissite 000-default.conf
 sudo a2ensite monica.conf
 
-# Enable php7.4 fpm, and restart apache
+# Enable php8.1 fpm, and restart apache
 sudo a2enmod proxy_fcgi setenvif
-sudo a2enconf php7.4-fpm
-sudo service php7.4-fpm restart
+sudo a2enconf php8.1-fpm
+sudo service php8.1-fpm restart
 sudo service apache2 restart
 ```
 

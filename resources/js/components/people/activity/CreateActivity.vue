@@ -85,8 +85,8 @@
         <!-- ACTIVITY CATEGORIES -->
         <div v-if="displayCategory" class="bb b--gray-monica pb3 mb3">
           <activity-type-list
+            v-model="newActivity.activity_type_id"
             :title="$t('people.activities_add_pick_activity')"
-            @input="updateCategory($event)"
           />
         </div>
 
@@ -179,6 +179,7 @@ export default {
         contacts: [],
       },
       todayDate: '',
+      initialEmotions: [],
       participants: [],
       errors: [],
     };
@@ -190,7 +191,7 @@ export default {
     },
 
     dirltr() {
-      return this.$root.htmldir == 'ltr';
+      return this.$root.htmldir === 'ltr';
     }
   },
 
@@ -237,7 +238,7 @@ export default {
         this.newActivity.activity_type_id = null;
         this.participants = [];
       }
-      this.displayDescription = this.newActivity.description ? this.newActivity.description != '' : false;
+      this.displayDescription = this.newActivity.description ? this.newActivity.description !== '' : false;
       this.displayEmotions = this.newActivity.emotions && this.newActivity.emotions.length > 0;
       this.displayCategory = this.newActivity.activity_type_id !== null;
       this.displayParticipants = this.participants.length > 0;
@@ -249,13 +250,9 @@ export default {
       this.$emit('cancel');
     },
 
-    updateCategory(id) {
-      this.newActivity.activity_type_id = parseInt(id);
-    },
-
     store() {
       const method = this.activity ? 'put' : 'post';
-      const url = this.activity ? 'api/activities/'+this.activity.id : 'api/activities';
+      const url = this.activity ? 'activities/'+this.activity.id : 'activities';
 
       if (! this.newActivity.contacts.includes(this.contactId)) {
         this.newActivity.contacts.push(this.contactId);

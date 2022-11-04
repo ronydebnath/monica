@@ -2,6 +2,7 @@
 
 namespace App\Models\Contact;
 
+use App\Traits\HasUuid;
 use App\Models\Account\Account;
 use App\Interfaces\LabelInterface;
 use App\Models\ModelBindingWithContact as Model;
@@ -10,10 +11,12 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class ContactField extends Model implements LabelInterface
 {
+    use HasUuid;
+
     /**
      * The attributes that aren't mass assignable.
      *
-     * @var array
+     * @var array<string>|bool
      */
     protected $guarded = ['id'];
 
@@ -67,7 +70,7 @@ class ContactField extends Model implements LabelInterface
     /**
      * Scope a query to only include contact field of email type.
      *
-     * @param  \Illuminate\Database\Eloquent\Builder $query
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopeEmail($query)
@@ -80,7 +83,7 @@ class ContactField extends Model implements LabelInterface
     /**
      * Scope a query to only include contact field of phone type.
      *
-     * @param  \Illuminate\Database\Eloquent\Builder $query
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopePhone($query)

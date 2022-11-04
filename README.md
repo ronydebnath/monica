@@ -7,11 +7,12 @@
 
 <div align="center">
 
-[![Build Status](https://img.shields.io/azure-devops/build/monicahq/monica/monica%20CI/master)](https://dev.azure.com/monicahq/monica)
+[![Build Status](https://img.shields.io/github/workflow/status/monicahq/monica/Build?style=flat-square&label=Build%20Status)](https://github.com/monicahq/monica/actions)
 [![Docker pulls](https://img.shields.io/docker/pulls/library/monica)](https://hub.docker.com/_/monica/)
 ![Lines of code](https://img.shields.io/tokei/lines/github/monicahq/monica)
-[![Code coverage](https://img.shields.io/sonar/coverage/monica?server=https%3A%2F%2Fsonarcloud.io)](https://sonarcloud.io/project/activity?custom_metrics=coverage&amp;graph=custom&amp;id=monica)
-[![License](https://img.shields.io/github/license/monicahq/monica)](https://github.com/monicahq/monica/blob/master/LICENSE)
+[![Code coverage](https://img.shields.io/sonar/coverage/monica?server=https%3A%2F%2Fsonarcloud.io&style=flat-square&label=Coverage%20Status)](https://sonarcloud.io/project/activity?custom_metrics=coverage&amp;graph=custom&amp;id=monica)
+[![License](https://img.shields.io/github/license/monicahq/monica)](https://github.com/monicahq/monica/blob/main/LICENSE.md)
+
 
 </div>
 
@@ -119,17 +120,17 @@ There are multiple ways of getting started with Monica:
     - Self-hosted will always be completely free with no strings attached and you will be in complete control.
 
 1. You can deploy straight on a [PaaS platform](https://en.wikipedia.org/wiki/Platform_as_a_service) like:
-   
-    - Platform.sh [![Deploy on Platform.sh](https://platform.sh/images/deploy/deploy-button-lg-blue.svg)](https://console.platform.sh/projects/create-project/?template=https%3A%2F%2Fgithub.com%2Fmonicahq%2Fmonica&amp;utm_campaign=deploy_on_platform&amp;utm_medium=button&amp;utm_source=affiliate_links&amp;utm_content=https%3A%2F%2Fgithub.com%2Fmonicahq%2Fmonica)
 
-    - [Heroku](https://heroku.com) [![Deploy to Heroku](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/monicahq/monica/tree/master)
+    - Platform.sh [![Deploy on Platform.sh](https://platform.sh/images/deploy/deploy-button-lg-blue.svg)](https://console.platform.sh/projects/create-project/?template=https%3A%2F%2Fraw.githubusercontent.com%2Fmonicahq%2Fmonica%2Fmain%2F.platform.app.yaml&amp;utm_campaign=deploy_on_platform&amp;utm_medium=button&amp;utm_source=affiliate_links&amp;utm_content=https%3A%2F%2Fgithub.com%2Fmonicahq%2Fmonica)
+
+    - [Heroku](https://heroku.com) [![Deploy to Heroku](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/monicahq/monica/tree/main)
 
 
 ### Requirements
 
 If you want to host Monica yourself, you will need a server with:
 
-- PHP 7.4 or newer
+- PHP 8.1 or newer
 - HTTP server with PHP support (eg: Apache, Nginx, Caddy)
 - Composer
 - MySQL
@@ -294,7 +295,7 @@ You can support the development of Monica [on Patreon](https://www.patreon.com/m
 
 Our team is made of two core members:
 
-- [Regis Freyd (djaiss)](https://github.com/djaiss)
+- [Maazarin (djaiss)](https://github.com/djaiss)
 
 - [Alexis Saettler (asbiin)](https://github.com/asbiin)
 
@@ -306,6 +307,6 @@ Monica uses a lot of open source projects and we thank them with all our hearts.
 
 ## License
 
-Copyright © 2016–2021
+Copyright © 2016–2022
 
-Licensed under [the AGPL License](/LICENSE).
+Licensed under [the AGPL License](/LICENSE.md).

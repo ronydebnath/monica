@@ -95,7 +95,7 @@ You'll need to run the installation instructions below and setup a local mysql i
 **Prerequisites**:
 * Git
 * [Node](https://nodejs.org/en/)
-* PHP 7.4+
+* PHP 8.1+
 * [Composer](https://getcomposer.org/)
 * GNU Make
 
@@ -177,7 +177,7 @@ sudo apt -y -f install google-chrome-stable fonts-liberation libappindicator1
 
 You should never make real HTTP calls in your unit tests - like querying an external API that is not linked to Monica.
 
-You can mock http calls by mocking calls made by Guzzl.
+You can mock http calls by mocking calls made by Guzzle.
 
 You can find an example of how mocking is done in the `GetWeatherInformationTest.php` file.
 
@@ -196,7 +196,7 @@ We follow [GitHub Flow](https://guides.github.com/introduction/flow/) to manage 
 
 We follow the [conventional commit message](https://conventionalcommits.org/) syntax for our commits. For instance, `feat: allow provided config object to extend other configs` or `feat(lang): added polish language`.
 
-Every feature branch that is squashed onto master must follow these rules.
+Every feature branch that is squashed onto main branch must follow these rules.
 
 The benefits are:
 * a standard way of writing commit messages for every contributor,
@@ -219,7 +219,7 @@ Moreover, every commit message needs to be written in lowercase.
 * ✅  feat(lang): added polish language
 * ❌  feat(lang): Added polish language
 
-All the commits in a pull request are squashed when merged into master. That means *only the commit message of the squashed branch needs to follow this commit message convention*. That also means that you don't need to follow this convention for commits within a branch, which will usually contains a lot of commits with a `wip` title.
+All the commits in a pull request are squashed when merged into main branch. That means *only the commit message of the squashed branch needs to follow this commit message convention*. That also means that you don't need to follow this convention for commits within a branch, which will usually contains a lot of commits with a `wip` title.
 
 <a id="markdown-backend" name="backend"></a>
 ## Backend
@@ -302,7 +302,7 @@ If you want to connect directly to Monica's MySQL instance read [_Connecting to 
     * Make sure to follow the current visual style and layout.
     * Make sure you do not introduce new colors in the UI.
     * Make sure the user experience is consistent with the rest of the application (ie buttons behave the same, modals are like other modals,...).
-    * Make sure you don't introduce new CSS classes, unless they are absolutely necessary. Use the classes provided by [Tachyons](tachyons.io) which is the functional CSS framework we currently use.
+    * Make sure you don't introduce new CSS classes, unless they are absolutely necessary. Use the classes provided by [Tachyons](https://tachyons.io) which is the functional CSS framework we currently use.
     * Do not use Jquery. When needed, use VueJS.
 
 The above comments can seem harsh and we apologize in advance. However you have to understand that we deeply care about providing the best user experience to our users. Features that are purely backend do not have the same impact as the ones that the user interacts with. Features that modify the front end will have a tremendous impact on how users perceive the software. Therefore we want to make sure that anything that touches the frontend is perfect and aligned with our vision.
@@ -356,7 +356,7 @@ We use the default Laravel helper: `trans('app.save')`.
 For everything that is in VueJS though, things are a bit different. We have to use a special library to allow translated strings to be available in the javascript views. The helper in Vue is slightly different.
 
 You can use these replacements instead of the regular (php) definition:
-* `trans('file.string')` is writen `$t('file.string')`.
+* `trans('file.string')` is written `$t('file.string')`.
 * `trans('file.string', ['param' => $value])` is written `$t('file.string', {param: value})`.
 * `trans_choice('file.string', $count)` is written `$tc('file.string', count)` or `$tc('file.string', count, {param: value})`.
 

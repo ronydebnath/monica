@@ -2,6 +2,7 @@
 
 namespace App\Models\Relationship;
 
+use App\Traits\HasUuid;
 use App\Models\Account\Account;
 use App\Models\Contact\Contact;
 use App\Models\ModelBinding as Model;
@@ -12,6 +13,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  */
 class Relationship extends Model
 {
+    use HasUuid;
+
     /**
      * All of the relationships to be touched.
      *
@@ -25,7 +28,7 @@ class Relationship extends Model
     /**
      * The attributes that are mass assignable.
      *
-     * @var array
+     * @var array<string>
      */
     protected $fillable = [
         'account_id',

@@ -3,29 +3,29 @@
 /**
  * ⚠️ Editing not allowed except for 'en' language.
  *
- * @see https://github.com/monicahq/monica/blob/master/docs/contribute/translate.md for translations.
+ * @see https://github.com/monicahq/monica/blob/main/docs/contribute/translate.md for translations.
  */
 
 return [
 
     //index
-    'people_not_found' => 'Contact not found',
-    'people_list_number_kids' => ':count child|:count children',
+    'people_not_found' => 'Contacto não encontrado',
+    'people_list_number_kids' => ':count criança|:count crianças',
     'people_list_last_updated' => 'Última consulta:',
-    'people_list_number_reminders' => ':count reminder|:count reminders',
+    'people_list_number_reminders' => ':count lembrete|:count lembretes',
     'people_list_blank_title' => 'Você ainda não tem ninguém em sua conta',
     'people_list_blank_cta' => 'Adicionar uma pessoa',
     'people_list_sort' => 'Ordenar',
-    'people_list_stats' => ':count contact|:count contacts',
+    'people_list_stats' => ':count contacto|:count contactos',
     'people_list_firstnameAZ' => 'Classificar por primeiro nome A → Z',
     'people_list_firstnameZA' => 'Classificar por primeiro nome Z → A',
     'people_list_lastnameAZ' => 'Classificar por sobrenome A → Z',
     'people_list_lastnameZA' => 'Classificar por sobrenome Z → A',
-    'people_list_lastactivitydateNewtoOld' => 'Sort by last activity date, newest to oldest',
-    'people_list_lastactivitydateOldtoNew' => 'Sort by last activity date, oldest to newest',
-    'people_list_filter_tag' => 'Showing all the contacts tagged with',
+    'people_list_lastactivitydateNewtoOld' => 'Ordenar por data da última atividade, mais recente para mais antigo',
+    'people_list_lastactivitydateOldtoNew' => 'Ordenar por data da última atividade, mais antigo para mais recente',
+    'people_list_filter_tag' => 'A mostrar todos os contactos etiquetados com',
     'people_list_clear_filter' => 'Limpar filtro',
-    'people_list_contacts_per_tags' => ':count contact|:count contacts',
+    'people_list_contacts_per_tags' => ':count contacto|:count contactos',
     'people_list_show_dead' => 'Show deceased people (:count)',
     'people_list_hide_dead' => 'Hide deceased people (:count)',
     'people_search' => 'Search your contacts…',
@@ -90,6 +90,7 @@ return [
     // Stay in touch
     'stay_in_touch' => 'Stay in touch',
     'stay_in_touch_frequency' => 'Stay in touch every day|Stay in touch every {count} days',
+    'stay_in_touch_next_date' => 'Next due: {date}',
     'stay_in_touch_invalid' => 'The frequency must be a number greater than 0.',
     'stay_in_touch_premium' => 'You need to upgrade your account to make use of this feature',
     'stay_in_touch_modal_title' => 'Stay in touch',
@@ -143,6 +144,7 @@ return [
 
     // Last called
     'last_called' => 'Last called: :date',
+    'last_talked_to' => 'Last called: {date}',
     'last_called_empty' => 'Last called: unknown',
     'last_activity_date' => 'Last activity together: :date',
     'last_activity_date_empty' => 'Last activity together: unknown',
@@ -285,7 +287,7 @@ return [
     'activities_profile_year_summary_activity_types' => 'Here is a breakdown of the type of activities you’ve done together in :year',
     'activities_profile_year_summary' => 'Here is what you two have done in :year',
     'activities_profile_number_occurences' => ':value activity|:value activities',
-    'activities_list_participants' => 'Participants:',
+    'activities_list_participants' => 'Participants ({total}):',
     'activities_list_emotions' => 'Emotions felt:',
     'activities_list_date' => 'Happened on',
     'activities_list_category' => 'Category:',

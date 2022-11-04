@@ -2,16 +2,19 @@
 
 namespace App\Models\Contact;
 
+use App\Traits\HasUuid;
 use App\Models\Account\Account;
 use App\Models\ModelBinding as Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Pet extends Model
 {
+    use HasUuid;
+
     /**
      * The attributes that aren't mass assignable.
      *
-     * @var array
+     * @var array<string>|bool
      */
     protected $guarded = ['id'];
 

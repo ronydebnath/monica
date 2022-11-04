@@ -3,13 +3,13 @@
 /**
  * ⚠️ Edition not allowed except for 'en' language.
  *
- * @see https://github.com/monicahq/monica/blob/master/docs/contribute/translate.md for translations.
+ * @see https://github.com/monicahq/monica/blob/main/docs/contribute/translate.md for translations.
  */
 
 return [
-    'user_unauthenticated' => 'You need to log in before doing a Webauthn authentication',
-    'auth_data_not_found' => 'Authentication data not found',
+    'user_unauthenticated' => 'Před autentizací Webauthn se musíte přihlásit',
+    'auth_data_not_found' => 'Ověřovací údaje nebyly nalezeny',
     'create_data_not_found' => 'Register data not found',
-    'object_not_found' => 'Object not found',
+    'object_not_found' => 'Objekt nenalezen',
 
 ];

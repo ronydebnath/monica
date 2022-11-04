@@ -6,6 +6,7 @@ use Tests\ApiTestCase;
 use Illuminate\Support\Str;
 use App\Models\Account\Photo;
 use App\Models\Contact\Contact;
+use Illuminate\Http\UploadedFile;
 use Sabre\VObject\PHPUnitAssertions;
 use Intervention\Image\Facades\Image;
 use Illuminate\Support\Facades\Storage;
@@ -97,12 +98,11 @@ class VCardContactTest extends ApiTestCase
      */
     public function test_carddav_put_one_contact_with_photo_already_set()
     {
-        Storage::fake();
-
         $user = $this->signin();
         $photo = factory(Photo::class)->create([
             'account_id' => $user->account_id,
         ]);
+        UploadedFile::fake()->image('file.jpg')->storeAs('', 'file.jpg');
         $contact = factory(Contact::class)->create([
             'account_id' => $user->account_id,
             'avatar_source' => 'photo',
@@ -331,7 +331,7 @@ class VCardContactTest extends ApiTestCase
 
         $response->assertStatus(204);
         $response->assertHeader('X-Sabre-Version');
-        $response->assertHeader('ETag');
+        //$response->assertHeader('ETag'); // etag no more sent
     }
 
     public function test_carddav_contacts_report_version4()
@@ -466,5 +466,29 @@ class VCardContactTest extends ApiTestCase
              '</d:propstat>'.
             '</d:response>'.
           '</d:multistatus>', false);
+    }
+
+    /**
+     * @group dav
+     * @test
+     */
+    public function carddav_delete_one_contact()
+    {
+        $user = $this->signin();
+        $contact = factory(Contact::class)->create([
+            'account_id' => $user->account_id,
+        ]);
+
+        $response = $this->call('DELETE', "/dav/addressbooks/{$user->email}/contacts/{$contact->uuid}.vcf");
+
+        $response->assertStatus(204);
+        $response->assertHeader('X-Sabre-Version');
+        $response->assertHeaderMissing('ETag');
+
+        $this->assertDatabaseMissing('contacts', [
+            'account_id' => $user->account_id,
+            'id' => $contact->id,
+            'deleted_at' => null,
+        ]);
     }
 }

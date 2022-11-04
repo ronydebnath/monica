@@ -124,6 +124,35 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Password strength
+    |--------------------------------------------------------------------------
+    |
+    | You can configure password strength requirements here.
+    | - password_min is the minimum length of the password.
+    | - password_rules are requirements that can be added on the password:
+    |   mixedCase, letters, numbers, symbols, uncompromised.
+    |   See https://laravel.com/docs/8.x/validation#validating-passwords
+    |
+    */
+
+    'password_min' => (int) env('APP_PASSWORD_MIN', 8),
+
+    'password_rules' => env('APP_PASSWORD_RULES', 'mixedCase,letters,numbers,symbols,uncompromised'),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Trust proxies
+    |--------------------------------------------------------------------------
+    |
+    | List of trusted proxies.
+    | Example: set it to '*' to allow any proxy.
+    |
+    */
+
+    'trust_proxies' => env('APP_TRUSTED_PROXIES', env('APP_TRUST_PROXIES')),
+
+    /*
+    |--------------------------------------------------------------------------
     | Autoloaded Service Providers
     |--------------------------------------------------------------------------
     |
@@ -201,6 +230,7 @@ return [
         'Config' => Illuminate\Support\Facades\Config::class,
         'Cookie' => Illuminate\Support\Facades\Cookie::class,
         'Crypt' => Illuminate\Support\Facades\Crypt::class,
+        'DateHelper' => App\Helpers\DateHelper::class,
         'DB' => Illuminate\Support\Facades\DB::class,
         'Eloquent' => Illuminate\Database\Eloquent\Model::class,
         'Event' => Illuminate\Support\Facades\Event::class,

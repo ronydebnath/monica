@@ -6,7 +6,7 @@
 ### This file is based off of the `apache` variant in the above mentioned repo
 ###
 
-FROM php:8.0-apache
+FROM php:8.1-apache
 
 # opencontainers annotations https://github.com/opencontainers/image-spec/blob/master/annotations.md
 LABEL org.opencontainers.image.authors="Alexis Saettler <alexis@saettler.org>" \
@@ -160,6 +160,17 @@ RUN set -ex; \
     composer install --no-interaction --no-progress --no-dev; \
     composer clear-cache; \
     rm -rf .composer
+
+# Install node dependencies
+RUN set -ex; \
+    \
+    curl -fsSL https://deb.nodesource.com/setup_18.x | bash -; \
+    apt-get install -y nodejs; \
+    npm install -g yarn; \
+    yarn run inst; \
+    yarn run dev; \
+    \
+    rm -rf /var/lib/apt/lists/*
 
 COPY scripts/docker/entrypoint.sh \
     scripts/docker/cron.sh \

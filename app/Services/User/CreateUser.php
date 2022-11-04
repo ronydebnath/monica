@@ -32,7 +32,7 @@ class CreateUser extends BaseService
     /**
      * Create a user.
      *
-     * @param array $data
+     * @param  array  $data
      * @return User
      */
     public function execute(array $data): User
@@ -57,7 +57,7 @@ class CreateUser extends BaseService
     /**
      * Create a user.
      *
-     * @param array $data
+     * @param  array  $data
      * @return User
      */
     private function createUser($data): User
@@ -77,8 +77,8 @@ class CreateUser extends BaseService
     /**
      * Set the regional default parameters.
      *
-     * @param User $user
-     * @param string|null $ipAddress
+     * @param  User  $user
+     * @param  string|null  $ipAddress
      * @return User
      */
     private function setRegionalParameters($user, $ipAddress): User
@@ -104,11 +104,11 @@ class CreateUser extends BaseService
         }
 
         // Currency
-        if (! is_null($currencyCode)) {
-            $this->associateCurrency($user, $currencyCode);
-        } elseif (! is_null($country)) {
-            foreach ($country->currencies as $currency) {
-                if ($this->associateCurrency($user, $currency)) {
+        if ((! is_null($currencyCode)
+            && ! $this->associateCurrency($user, $currencyCode))
+            || ! is_null($country)) {
+            foreach ($country->getCurrencies() as $currency) {
+                if ($this->associateCurrency($user, $currency['iso_4217_code'])) {
                     break;
                 }
             }
@@ -116,7 +116,7 @@ class CreateUser extends BaseService
 
         // Temperature scale
         if (! is_null($country)) {
-            switch ($country->cca2) {
+            switch ($country->getIsoAlpha2()) {
                 case 'US':
                 case 'BZ':
                 case 'KY':
@@ -136,8 +136,8 @@ class CreateUser extends BaseService
     /**
      * Associate currency with the User.
      *
-     * @param User $user
-     * @param string $currency
+     * @param  User  $user
+     * @param  string  $currency
      * @return bool
      */
     private function associateCurrency($user, $currency): bool

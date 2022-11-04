@@ -2,13 +2,13 @@
 
 namespace App\Services\Account\Photo;
 
-use function Safe\substr;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use App\Models\Account\Photo;
 use App\Services\BaseService;
 use function Safe\finfo_open;
 use function Safe\preg_match;
+use App\Helpers\StorageHelper;
 use App\Models\Contact\Contact;
 use function Safe\base64_decode;
 use Intervention\Image\Facades\Image;
@@ -44,7 +44,7 @@ class UploadPhoto extends BaseService
     /**
      * Upload a photo.
      *
-     * @param array $data
+     * @param  array  $data
      * @return Photo|null
      */
     public function execute(array $data): ?Photo
@@ -111,9 +111,9 @@ class UploadPhoto extends BaseService
         $tempfile = $this->storeImage('local', $image, 'temp/'.$filename);
 
         try {
-            $storagePath = disk_adapter('local')->getPathPrefix();
+            $storagePath = StorageHelper::disk('local')->path($tempfile);
             // This sets the basePath to get the filesize later
-            $image = $image->setFileInfoFromPath($storagePath.$tempfile);
+            $image = $image->setFileInfoFromPath($storagePath);
             $extension = (new \Mimey\MimeTypes)->getExtension($image->mime());
             if (empty($extension)) {
                 $extension = str_replace(' ', '', Arr::get($data, 'extension'));
@@ -143,9 +143,9 @@ class UploadPhoto extends BaseService
     /**
      * Store the decoded image in the temp file.
      *
-     * @param string $disk
-     * @param \Intervention\Image\Image $image
-     * @param string $filename
+     * @param  string  $disk
+     * @param  \Intervention\Image\Image  $image
+     * @param  string  $filename
      * @return string|null
      */
     private function storeImage(string $disk, $image, string $filename): ?string
@@ -159,7 +159,7 @@ class UploadPhoto extends BaseService
     /**
      * Determines if the source photo is a valid encoded photo.
      *
-     * @param string $data
+     * @param  string  $data
      * @return bool
      */
     private function isValidPhoto(string $data): bool
@@ -170,12 +170,12 @@ class UploadPhoto extends BaseService
     /**
      * Determines if source data is binary data.
      *
-     * @param string $data
+     * @param  string  $data
      * @return bool
      */
     private function isBinary(string $data): bool
     {
-        $mime = finfo_buffer(finfo_open(FILEINFO_MIME_TYPE), $data);
+        $mime = finfo_buffer(finfo_open(FILEINFO_MIME_TYPE), $data); // @phpstan-ignore-line
 
         return substr($mime, 0, 4) != 'text' && $mime != 'application/x-empty';
     }
@@ -183,7 +183,7 @@ class UploadPhoto extends BaseService
     /**
      * Determines if source data is data-url format.
      *
-     * @param string $data
+     * @param  string  $data
      * @return bool
      */
     private function isDataUrl(string $data): bool
@@ -205,7 +205,7 @@ class UploadPhoto extends BaseService
     /**
      * Determines if source data is base64 encoded.
      *
-     * @param string $data
+     * @param  string  $data
      * @return bool
      */
     private function isBase64(string $data): bool

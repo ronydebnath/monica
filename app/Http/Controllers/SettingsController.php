@@ -8,10 +8,8 @@ use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Helpers\LocaleHelper;
 use App\Helpers\AccountHelper;
-use Illuminate\Support\Carbon;
 use App\Helpers\TimezoneHelper;
 use App\Models\Contact\Contact;
-use App\Jobs\ExportAccountAsSQL;
 use App\Jobs\AddContactFromVCard;
 use App\Models\Account\ImportJob;
 use App\Models\Account\Invitation;
@@ -74,7 +72,7 @@ class SettingsController extends Controller
                 ->withLocales(LocaleHelper::getLocaleList()->sortByCollator('name-orig'))
                 ->withHours(DateHelper::getListOfHours())
                 ->withSelectedTimezone(TimezoneHelper::adjustEquivalentTimezone(DateHelper::getTimezone()))
-                ->withTimezones(collect(TimezoneHelper::getListOfTimezones())->map(function ($timezone) {
+                ->withTimezones(collect(TimezoneHelper::getListOfTimezones())->map(function (array $timezone): array {
                     return ['id' => $timezone['timezone'], 'name'=>$timezone['name']];
                 }));
     }
@@ -82,8 +80,7 @@ class SettingsController extends Controller
     /**
      * Save user settings.
      *
-     * @param SettingsRequest $request
-     *
+     * @param  SettingsRequest  $request
      * @return \Illuminate\Http\RedirectResponse
      */
     public function save(SettingsRequest $request)
@@ -126,8 +123,7 @@ class SettingsController extends Controller
     /**
      * Delete user account.
      *
-     * @param Request $request
-     *
+     * @param  Request  $request
      * @return \Illuminate\Http\RedirectResponse
      */
     public function delete(Request $request)
@@ -151,8 +147,7 @@ class SettingsController extends Controller
     /**
      * Reset user account.
      *
-     * @param Request $request
-     *
+     * @param  Request  $request
      * @return \Illuminate\Http\RedirectResponse
      */
     public function reset(Request $request)
@@ -160,41 +155,12 @@ class SettingsController extends Controller
         $user = $request->user();
         $account = $user->account;
 
-        app(ResetAccount::class)->execute([
+        ResetAccount::dispatch([
             'account_id' => $account->id,
         ]);
 
         return redirect()->route('settings.index')
                     ->with('status', trans('settings.reset_success'));
-    }
-
-    /**
-     * Display the export view.
-     *
-     * @return \Illuminate\View\View|\Illuminate\Contracts\View\Factory
-     */
-    public function export()
-    {
-        return view('settings.export')
-            ->withAccountHasLimitations(AccountHelper::hasLimitations(auth()->user()->account));
-    }
-
-    /**
-     * Exports the data of the account in SQL format.
-     *
-     * @return \Illuminate\Http\Response|\Symfony\Component\HttpFoundation\Response|null
-     */
-    public function exportToSql()
-    {
-        $path = ExportAccountAsSQL::dispatchSync();
-
-        $adapter = disk_adapter(ExportAccountAsSQL::STORAGE);
-
-        $exportdate = Carbon::now(DateHelper::getTimezone())->format('Y-m-d');
-
-        return response()
-            ->download($adapter->getPathPrefix().$path, "monica-export.$exportdate.sql")
-            ->deleteFileAfterSend(true);
     }
 
     /**
@@ -293,8 +259,7 @@ class SettingsController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param InvitationRequest $request
-     *
+     * @param  InvitationRequest  $request
      * @return \Illuminate\Http\RedirectResponse
      */
     public function inviteUser(InvitationRequest $request)
@@ -340,8 +305,7 @@ class SettingsController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param Invitation $invitation
-     *
+     * @param  Invitation  $invitation
      * @return \Illuminate\Http\RedirectResponse
      */
     public function destroyInvitation(Invitation $invitation)
@@ -355,8 +319,7 @@ class SettingsController extends Controller
     /**
      * Delete additional user account.
      *
-     * @param int $userID
-     *
+     * @param  int  $userID
      * @return \Illuminate\Http\RedirectResponse
      */
     public function deleteAdditionalUser($userID)
@@ -387,8 +350,7 @@ class SettingsController extends Controller
     /**
      * Destroy the tag.
      *
-     * @param int $tagId
-     *
+     * @param  int  $tagId
      * @return \Illuminate\Http\RedirectResponse
      */
     public function deleteTag($tagId)
@@ -437,7 +399,7 @@ class SettingsController extends Controller
      * about the contact (notes, reminders, ...).
      * Possible values: life-events | notes.
      *
-     * @param  Request $request
+     * @param  Request  $request
      * @return string
      */
     public function updateDefaultProfileView(Request $request)

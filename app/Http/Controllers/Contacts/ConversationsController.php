@@ -24,8 +24,7 @@ class ConversationsController extends Controller
     /**
      * Display the Create conversation page.
      *
-     * @param Contact $contact
-     *
+     * @param  Contact  $contact
      * @return \Illuminate\View\View
      */
     public function create(Request $request, Contact $contact)
@@ -38,7 +37,7 @@ class ConversationsController extends Controller
     /**
      * Display the list of conversations.
      *
-     * @param  Contact $contact
+     * @param  Contact  $contact
      * @return Collection
      */
     public function index(Request $request, Contact $contact)
@@ -66,9 +65,8 @@ class ConversationsController extends Controller
     /**
      * Store the conversation.
      *
-     * @param Request $request
-     * @param Contact $contact
-     *
+     * @param  Request  $request
+     * @param  Contact  $contact
      * @return \Illuminate\Http\RedirectResponse
      */
     public function store(Request $request, Contact $contact)
@@ -112,8 +110,7 @@ class ConversationsController extends Controller
     /**
      * Display a specific conversation.
      *
-     * @param Contact $contact
-     *
+     * @param  Contact  $contact
      * @return \Illuminate\View\View
      */
     public function edit(Request $request, Contact $contact, Conversation $conversation)
@@ -140,10 +137,9 @@ class ConversationsController extends Controller
     /**
      * Update the conversation.
      *
-     * @param Request $request
-     * @param Contact $contact
-     * @param Conversation $conversation
-     *
+     * @param  Request  $request
+     * @param  Contact  $contact
+     * @param  Conversation  $conversation
      * @return \Illuminate\Http\RedirectResponse
      */
     public function update(Request $request, Contact $contact, Conversation $conversation)
@@ -197,7 +193,7 @@ class ConversationsController extends Controller
     /**
      * Validate datas and get an array for create or update a conversation.
      *
-     * @param Request $request
+     * @param  Request  $request
      * @return array|\Illuminate\Contracts\Validation\Validator
      */
     private function validateAndGetDatas(Request $request)
@@ -218,9 +214,9 @@ class ConversationsController extends Controller
         // find out what the date is
         $chosenDate = $request->input('conversationDateRadio');
         if ($chosenDate == 'today') {
-            $date = DateHelper::getDate(now());
+            $date = DateHelper::getDate(now($request->user()->timezone));
         } elseif ($chosenDate == 'yesterday') {
-            $date = DateHelper::getDate(now()->subDay());
+            $date = DateHelper::getDate(now($request->user()->timezone)->subDay());
         } else {
             $date = $request->input('conversationDate');
         }
@@ -235,10 +231,11 @@ class ConversationsController extends Controller
     /**
      * Update messages for conversation.
      *
-     * @param Request $request
-     * @param Conversation $conversation
-     * @param string $date
+     * @param  Request  $request
+     * @param  Conversation  $conversation
+     * @param  string  $date
      * @return bool|string|\Illuminate\Contracts\Validation\Validator
+     * @psalm-return bool|array|string|\Illuminate\Contracts\Validation\Validator
      */
     private function updateMessages(Request $request, Conversation $conversation, string $date)
     {
@@ -268,10 +265,9 @@ class ConversationsController extends Controller
     /**
      * Delete the conversation.
      *
-     * @param Request $request
-     * @param Contact $contact
-     * @param Conversation $conversation
-     *
+     * @param  Request  $request
+     * @param  Contact  $contact
+     * @param  Conversation  $conversation
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\JsonResponse
      */
     public function destroy(Request $request, Contact $contact, Conversation $conversation)

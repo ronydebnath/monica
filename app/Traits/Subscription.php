@@ -12,8 +12,8 @@ trait Subscription
     /**
      * Process the upgrade payment.
      *
-     * @param string $payment_method
-     * @param string $planName
+     * @param  string  $payment_method
+     * @param  string  $planName
      * @return bool|string
      */
     public function subscribe(string $payment_method, string $planName)
@@ -36,13 +36,13 @@ trait Subscription
     /**
      * Update an existing subscription.
      *
-     * @param string $planName
-     * @param \Laravel\Cashier\Subscription $subscription
+     * @param  string  $planName
+     * @param  \Laravel\Cashier\Subscription  $subscription
      * @return \Laravel\Cashier\Subscription
      */
     public function updateSubscription(string $planName, \Laravel\Cashier\Subscription $subscription)
     {
-        $oldPlan = $subscription->stripe_plan;
+        $oldPlan = $subscription->stripe_price;
         $plan = InstanceHelper::getPlanInformationFromConfig($planName);
         if ($plan === null) {
             abort(404);
@@ -57,7 +57,7 @@ trait Subscription
             return $subscription->swap($plan['id']);
         });
 
-        if ($subscription->stripe_plan !== $oldPlan && $subscription->stripe_plan === $plan['id']) {
+        if ($subscription->stripe_price !== $oldPlan && $subscription->stripe_price === $plan['id']) {
             $subscription->forceFill([
                 'name' => $plan['name'],
             ])->save();
@@ -99,7 +99,7 @@ trait Subscription
     {
         $plan = $this->getSubscribedPlan();
 
-        return is_null($plan) ? '' : $plan->stripe_plan;
+        return is_null($plan) ? '' : $plan->stripe_price;
     }
 
     /**

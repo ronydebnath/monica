@@ -8,13 +8,11 @@ use App\Models\Contact\Contact;
 use Illuminate\Http\JsonResponse;
 use App\Jobs\UpdateLastConsultedDate;
 use Illuminate\Database\QueryException;
-use App\Services\Contact\Contact\SetMeContact;
 use Illuminate\Validation\ValidationException;
 use App\Services\Contact\Contact\CreateContact;
 use App\Services\Contact\Contact\UpdateContact;
 use App\Services\Contact\Contact\DestroyContact;
 use Illuminate\Http\Resources\Json\JsonResource;
-use App\Services\Contact\Contact\DeleteMeContact;
 use App\Services\Contact\Contact\UpdateWorkInformation;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Http\Resources\Contact\Contact as ContactResource;
@@ -39,7 +37,7 @@ class ApiContactController extends ApiController
      * We will only retrieve the contacts that are "real", not the partials
      * ones.
      *
-     * @param Request $request
+     * @param  Request  $request
      * @return JsonResource|JsonResponse
      */
     public function index(Request $request)
@@ -82,8 +80,8 @@ class ApiContactController extends ApiController
     /**
      * Get the detail of a given contact.
      *
-     * @param Request $request
-     * @param int $id
+     * @param  Request  $request
+     * @param  int  $id
      * @return ContactResource|JsonResponse
      */
     public function show(Request $request, int $id)
@@ -104,8 +102,7 @@ class ApiContactController extends ApiController
     /**
      * Store the contact.
      *
-     * @param Request $request
-     *
+     * @param  Request  $request
      * @return ContactResource|JsonResponse
      */
     public function store(Request $request)
@@ -133,8 +130,7 @@ class ApiContactController extends ApiController
     /**
      * Update the contact.
      *
-     * @param Request $request
-     *
+     * @param  Request  $request
      * @return ContactResource|JsonResponse
      */
     public function update(Request $request, $contactId)
@@ -163,73 +159,25 @@ class ApiContactController extends ApiController
     /**
      * Delete a contact.
      *
-     * @param Request $request
-     *
+     * @param  Request  $request
      * @return JsonResponse
      */
     public function destroy(Request $request, $contactId)
     {
         $data = [
-            'contact_id' => $contactId,
             'account_id' => auth()->user()->account_id,
+            'contact_id' => $contactId,
         ];
-        app(DestroyContact::class)->execute($data);
+        DestroyContact::dispatch($data);
 
         return $this->respondObjectDeleted($contactId);
     }
 
     /**
-     * Set a contact as 'me'.
-     *
-     * @param Request $request
-     * @param int $contactId
-     *
-     * @return string
-     */
-    public function setMe(Request $request, $contactId)
-    {
-        $data = [
-            'contact_id' => $contactId,
-            'account_id' => auth()->user()->account_id,
-            'user_id' => auth()->user()->id,
-        ];
-
-        try {
-            app(SetMeContact::class)->execute($data);
-        } catch (ModelNotFoundException $e) {
-            return $this->respondNotFound();
-        } catch (ValidationException $e) {
-            return $this->respondValidatorFailed($e->validator);
-        }
-
-        return $this->respond(['true']);
-    }
-
-    /**
-     * Removes contact as 'me' association.
-     *
-     * @param Request $request
-     *
-     * @return string
-     */
-    public function removeMe(Request $request)
-    {
-        $data = [
-            'account_id' => auth()->user()->account_id,
-            'user_id' => auth()->user()->id,
-        ];
-
-        app(DeleteMeContact::class)->execute($data);
-
-        return $this->respond(['true']);
-    }
-
-    /**
      * Set the contact career.
      *
-     * @param Request $request
-     * @param int $contactId
-     *
+     * @param  Request  $request
+     * @param  int  $contactId
      * @return ContactResource|JsonResponse
      */
     public function updateWork(Request $request, $contactId)
@@ -257,9 +205,8 @@ class ApiContactController extends ApiController
     /**
      * Set the contact food preferences.
      *
-     * @param Request $request
-     * @param int $contactId
-     *
+     * @param  Request  $request
+     * @param  int  $contactId
      * @return ContactResource|JsonResponse
      */
     public function updateFoodPreferences(Request $request, $contactId)
@@ -286,9 +233,8 @@ class ApiContactController extends ApiController
     /**
      * Set how you met the contact.
      *
-     * @param Request $request
-     * @param int $contactId
-     *
+     * @param  Request  $request
+     * @param  int  $contactId
      * @return ContactResource|JsonResponse
      */
     public function updateIntroduction(Request $request, $contactId)

@@ -3,7 +3,7 @@
 /**
  * ⚠️ Editing not allowed except for 'en' language.
  *
- * @see https://github.com/monicahq/monica/blob/master/docs/contribute/translate.md for translations.
+ * @see https://github.com/monicahq/monica/blob/main/docs/contribute/translate.md for translations.
  */
 
 return [
@@ -90,6 +90,7 @@ return [
     // Stay in touch
     'stay_in_touch' => 'Restez en contact',
     'stay_in_touch_frequency' => 'Rester en contact chaque jour|Rester en contact chaque jour|Rester en contact tous les {count} jours',
+    'stay_in_touch_next_date' => 'Prochaine échéance : {date}',
     'stay_in_touch_invalid' => 'La fréquence doit être un nombre supérieur à 0.',
     'stay_in_touch_premium' => 'Vous devez mettre à jour votre compte pour pouvoir profiter de cette fonctionnalité',
     'stay_in_touch_modal_title' => 'Restez en contact',
@@ -143,6 +144,7 @@ return [
 
     // Last called
     'last_called' => 'Dernier appel : :date',
+    'last_talked_to' => 'Dernier appel : {date}',
     'last_called_empty' => 'Dernier appel : inconnu',
     'last_activity_date' => 'Dernière activité ensemble : :date',
     'last_activity_date_empty' => 'Dernière activité ensemble : inconnu',
@@ -282,10 +284,10 @@ return [
     'activities_view_activities_report' => 'Afficher les rapports d’activités',
     'activities_profile_title' => 'Rapports d’activités entre :name et vous',
     'activities_profile_subtitle' => 'Vous avez enregistré :total_activities activité avec :name au total et :activities_last_twelve_months au cours des 12 derniers mois.|Vous avez enregistré :total_activities activités avec :name au total et :activities_last_twelve_months au cours des 12 derniers mois.',
-    'activities_profile_year_summary_activity_types' => 'Voici une ventilation du type d’activités que vous avez faites ensemble en :year',
+    'activities_profile_year_summary_activity_types' => 'Voici un aperçu du type d\'activités que vous avez réalisées ensemble en :year',
     'activities_profile_year_summary' => 'Voici ce que vous avez fait ensemble en :year',
     'activities_profile_number_occurences' => ':value activité|:value activités',
-    'activities_list_participants' => 'Participants :',
+    'activities_list_participants' => 'Participants ({total}) :',
     'activities_list_emotions' => 'Émotions ressenties :',
     'activities_list_date' => 'Arrivé le',
     'activities_list_category' => 'Catégorie :',

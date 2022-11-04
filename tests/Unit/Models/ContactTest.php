@@ -4,6 +4,7 @@ namespace Tests\Unit\Models;
 
 use Carbon\Carbon;
 use App\Models\User\User;
+use Mockery\MockInterface;
 use Tests\FeatureTestCase;
 use App\Helpers\DateHelper;
 use App\Models\Contact\Debt;
@@ -24,6 +25,7 @@ use App\Notifications\StayInTouchEmail;
 use App\Models\Relationship\Relationship;
 use App\Jobs\StayInTouch\ScheduleStayInTouch;
 use App\Models\Relationship\RelationshipType;
+use LaravelAdorable\Adorable\LaravelAdorable;
 use App\Models\Relationship\RelationshipTypeGroup;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Facades\Notification as NotificationFacade;
@@ -494,8 +496,7 @@ class ContactTest extends FeatureTestCase
         $contact->account_id = 1;
         $contact->id = 1;
 
-        $this->assertEquals(
-            null,
+        $this->assertNull(
             $contact->getLastActivityDate()
         );
     }
@@ -515,8 +516,6 @@ class ContactTest extends FeatureTestCase
     /** @test */
     public function it_returns_the_url_of_the_avatar()
     {
-        config(['monica.adorable_api' => 'adorable_api']);
-
         // default
         $contact = factory(Contact::class)->create([
             'avatar_default_url' => 'defaultURL',
@@ -530,12 +529,16 @@ class ContactTest extends FeatureTestCase
 
         // adorable
         $contact = factory(Contact::class)->create([
-            'avatar_adorable_url' => 'adorable_api/adorableURL',
+            'avatar_adorable_uuid' => 'uuid',
             'avatar_source' => 'adorable',
         ]);
 
+        $this->mock(LaravelAdorable::class, function (MockInterface $mock) {
+            $mock->shouldReceive('get')->andReturn('adorableURL');
+        });
+
         $this->assertEquals(
-            'adorable_api/adorableURL',
+            'adorableURL',
             $contact->getAvatarURL()
         );
 
@@ -989,9 +992,11 @@ class ContactTest extends FeatureTestCase
         config(['monica.requires_subscription' => false]);
         NotificationFacade::fake();
 
-        Carbon::setTestNow(Carbon::create(2017, 1, 1, 12, 0, 0, 'America/New_York'));
+        Carbon::setTestNow(Carbon::create(2017, 1, 1, 15, 0, 0));
 
-        $account = factory(Account::class)->create([]);
+        $account = factory(Account::class)->create([
+            'default_time_reminder_is_sent' => '10:00',
+        ]);
         $contact = factory(Contact::class)->create([
             'account_id' => $account->id,
             'stay_in_touch_frequency' => 3,

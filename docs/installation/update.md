@@ -15,9 +15,9 @@ or if you have installed Monica on your own server, you need to follow the steps
 
 1. Always make a backup of your data before upgrading.
 2. Check that your backup is valid.
-3. Read the [release notes](https://github.com/monicahq/monica/blob/master/CHANGELOG.md) to check for breaking changes.
+3. Read the [release notes](https://github.com/monicahq/monica/blob/main/CHANGELOG.md) to check for breaking changes.
 4. Update sources:
-    1. Consider check out a tagged version of Monica since `master` branch may not always be stable.
+    1. Consider check out a tagged version of Monica since `main` branch may not always be stable.
        Find the latest official version on the [release page](https://github.com/monicahq/monica/releases)
        ```sh
        # Get latest tags from GitHub
@@ -25,9 +25,9 @@ or if you have installed Monica on your own server, you need to follow the steps
        # Clone the desired version
        git checkout tags/v2.18.0
        ```
-    2. Or check out `master`
+    2. Or check out `main`
        ```sh
-       git pull origin master
+       git pull origin main
        ```
 5. Update the dependencies of the project:
    ```sh
@@ -39,7 +39,7 @@ or if you have installed Monica on your own server, you need to follow the steps
    php artisan monica:update --force
    ```
 
-The `monica:update` command will run migrations scripts for database, and flush all cache for config, route, and view, as an optimization process. It's easier than run every need command independently.
+The `monica:update` command runs migration scripts for the database, and flushes all caches for config, route, and view as an optimization process. It’s easier than running every required command individually.
 
 
 Note: if you have just change some setting in your `.env` file, as the configuration of the application is cached, any update on the `.env` file will not be detected after that. You may have to run `php artisan config:cache` manually after every update of `.env` file.
@@ -51,7 +51,7 @@ You can update your Monica instance to the latest version by cloning the reposit
 
 1. Clone the Monica repository to your local environment by `git clone https://github.com/monicahq/monica.git`.
 1. Add your app's heroku git repository by `heroku git:remote -a (heroku app name)` (this of course requires the [Heroku CLI](https://devcenter.heroku.com/articles/heroku-cli).
-1. Push to heroku by `git push heroku master`. Heroku will build and update the repository, automatically.
+1. Push to heroku by `git push heroku main:master`. Heroku will build and update the repository, automatically.
 
 ## Importing vCards (CLI only)
 
@@ -90,7 +90,7 @@ There is one caveat with the SQL exporter: you can't get the photos you've uploa
 
 ### Importing SQL into Heroku
 
-If you're running your own Monica Heroku instance as mentioned in the [Heroku Installation Documentation](https://github.com/monicahq/monica/blob/master/docs/installation/providers/heroku.md), you're not actually running your own SQL server, which means that the solutions above might not be of assistance.
+If you're running your own Monica Heroku instance as mentioned in the [Heroku Installation Documentation](https://github.com/monicahq/monica/blob/main/docs/installation/providers/heroku.md), you're not actually running your own SQL server, which means that the solutions above might not be of assistance.
 
 Heroku dynos use a [ClearDB MySQL add-on](https://devcenter.heroku.com/articles/cleardb) as their database. You can still use an SQL admin tool (like phpMyAdmin or Sequel Pro) to interact with the database, as well as use the `mysql-client` command line tool, you just need to know where to look for the credentials. 
 
@@ -223,7 +223,7 @@ SET FOREIGN_KEY_CHECKS = 0;
 And this, at the very end of the file (after the last `INSERT INTO...` statement:
 
 ```
-SET FOREIGN_KEY_CHECKS = 0
+SET FOREIGN_KEY_CHECKS = 1
 ```
 
 **Notes:**

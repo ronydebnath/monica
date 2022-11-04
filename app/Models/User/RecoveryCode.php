@@ -12,7 +12,7 @@ class RecoveryCode extends Model
     /**
      * The attributes that are mass assignable.
      *
-     * @var array
+     * @var array<string>
      */
     protected $fillable = [
         'account_id',
@@ -23,7 +23,7 @@ class RecoveryCode extends Model
     /**
      * Scope a query to only include unused code.
      *
-     * @param Builder $query
+     * @param  Builder  $query
      * @return Builder
      */
     public function scopeUnused($query)

@@ -9,7 +9,7 @@ class PetCategory extends Model
     /**
      * The attributes that aren't mass assignable.
      *
-     * @var array
+     * @var array<string>|bool
      */
     protected $guarded = ['id'];
 
@@ -18,7 +18,7 @@ class PetCategory extends Model
     /**
      * Scope a query to only include pet categories that are considered `common`.
      *
-     * @param  \Illuminate\Database\Eloquent\Builder $query
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopeCommon($query)

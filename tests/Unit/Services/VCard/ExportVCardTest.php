@@ -312,6 +312,24 @@ class ExportVCardTest extends TestCase
     }
 
     /** @test */
+    public function vcard_add_birthday_with_unknown_year()
+    {
+        $account = factory(Account::class)->create();
+        $contact = factory(Contact::class)->create(['account_id' => $account->id]);
+        $contact->setSpecialDate('birthdate', 0, 10, 5);
+        $vCard = new VCard();
+
+        $exportVCard = app(ExportVCard::class);
+        $this->invokePrivateMethod($exportVCard, 'exportBirthday', [$contact, $vCard]);
+
+        $this->assertCount(
+            self::defaultPropsCount + 1,
+            $vCard->children()
+        );
+        $this->assertStringContainsString('BDAY:--1005', $vCard->serialize());
+    }
+
+    /** @test */
     public function vcard_add_contact_fields_empty()
     {
         $account = factory(Account::class)->create();
@@ -479,6 +497,42 @@ class ExportVCardTest extends TestCase
             ['Whatsapp', 'Whatsapp', 'test', 'SOCIALPROFILE;TYPE=whatsapp:https://wa.me/test'],
             ['Telegram', 'Telegram', 'test', 'SOCIALPROFILE;TYPE=telegram:http://t.me/test'],
             ['LinkedIn', 'LinkedIn', 'test', 'SOCIALPROFILE;TYPE=linkedin:http://www.linkedin.com/in/test'],
+        ];
+    }
+
+    /**
+     * @test
+     * @dataProvider contactUrlProvider
+     */
+    public function vcard_add_contact_url($name, $protocol, $data, $result)
+    {
+        $account = factory(Account::class)->create();
+        $contact = factory(Contact::class)->create(['account_id' => $account->id]);
+        $vCard = new VCard();
+
+        $contactFieldType = factory(ContactFieldType::class)->create([
+            'account_id' => $account->id,
+            'name' => $name,
+            'protocol' => $protocol,
+            'type' => 'URL',
+        ]);
+        factory(ContactField::class)->create([
+            'contact_id' => $contact->id,
+            'account_id' => $account->id,
+            'contact_field_type_id' => $contactFieldType->id,
+            'data' => $data,
+        ]);
+
+        $exportVCard = app(ExportVCard::class);
+        $this->invokePrivateMethod($exportVCard, 'exportContactFields', [$contact, $vCard]);
+        $this->assertStringContainsString($result, $vCard->serialize());
+    }
+
+    public function contactUrlProvider()
+    {
+        return [
+            ['Discord', 'https://www.discord.app/user/', 'test123', 'URL;VALUE=URI:https://www.discord.app/user/test123'],
+            ['Facebook Profile', 'https://www.facebook.com/', 'test123', 'URL;VALUE=URI:https://www.facebook.com/test123'],
         ];
     }
 

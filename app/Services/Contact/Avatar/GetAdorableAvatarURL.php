@@ -2,7 +2,6 @@
 
 namespace App\Services\Contact\Avatar;
 
-use Illuminate\Support\Str;
 use App\Services\BaseService;
 
 class GetAdorableAvatarURL extends BaseService
@@ -24,7 +23,7 @@ class GetAdorableAvatarURL extends BaseService
      * Get an url for an adorable avatar.
      * - http://avatars.adorable.io/ gives avatars based on a random string.
      *
-     * @param array $data
+     * @param  array  $data
      * @return string|null
      */
     public function execute(array $data)
@@ -33,7 +32,7 @@ class GetAdorableAvatarURL extends BaseService
 
         $size = $this->size($data);
 
-        return Str::finish(config('monica.adorable_api'), '/').$size.'/'.$data['uuid'].'.png';
+        return $size.'/'.$data['uuid'].'.png';
     }
 
     /**

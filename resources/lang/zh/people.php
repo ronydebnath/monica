@@ -3,14 +3,14 @@
 /**
  * ⚠️ Editing not allowed except for 'en' language.
  *
- * @see https://github.com/monicahq/monica/blob/master/docs/contribute/translate.md for translations.
+ * @see https://github.com/monicahq/monica/blob/main/docs/contribute/translate.md for translations.
  */
 
 return [
 
     //index
     'people_not_found' => '联系人未找到',
-    'people_list_number_kids' => ':count child|:count children',
+    'people_list_number_kids' => ':count 个孩子',
     'people_list_last_updated' => '最近更新:',
     'people_list_number_reminders' => ':count 个提醒',
     'people_list_blank_title' => '您还没有任何联系人',
@@ -21,18 +21,18 @@ return [
     'people_list_firstnameZA' => '以名字 Z → A排序',
     'people_list_lastnameAZ' => '以姓A → Z排序',
     'people_list_lastnameZA' => '以姓Z → A排序',
-    'people_list_lastactivitydateNewtoOld' => 'Sort by last activity date, newest to oldest',
-    'people_list_lastactivitydateOldtoNew' => 'Sort by last activity date, oldest to newest',
+    'people_list_lastactivitydateNewtoOld' => '以最后活动日期从近到远排序',
+    'people_list_lastactivitydateOldtoNew' => '以最后活动日期从远到近排序',
     'people_list_filter_tag' => '拥有以下标签的联系人：',
     'people_list_clear_filter' => '清除筛选',
-    'people_list_contacts_per_tags' => ':count contact|:count contacts',
+    'people_list_contacts_per_tags' => ':count 个联系人',
     'people_list_show_dead' => '显示已故人员 (:count)',
     'people_list_hide_dead' => '隐藏已故人员 (:count)',
-    'people_search' => 'Search your contacts…',
+    'people_search' => '搜索联系人',
     'people_search_no_results' => '未找到任何结果',
     'people_search_next' => '下一页',
-    'people_search_prev' => 'Previous',
-    'people_search_rows_per_page' => 'Rows per page',
+    'people_search_prev' => '上一页',
+    'people_search_rows_per_page' => '每页行数',
     'people_search_of' => '/',
     'people_search_page' => '页',
     'people_search_all' => '所有',
@@ -42,13 +42,13 @@ return [
     'people_list_account_upgrade_cta' => '立即升级',
     'people_list_untagged' => '查看未加标签的联系人',
     'people_list_filter_untag' => '所有未加标签的联系人',
-    'archived_contact_readonly' => 'Archived contact can’t be edited, please unarchive it first.',
+    'archived_contact_readonly' => '无法编辑已归档的联系人，请先解除归档。',
 
     // people add
     'people_add_title' => '添加一位新的联系人',
-    'people_add_missing' => 'No person found – add a new one now',
+    'people_add_missing' => '列表为空 — — 现在添加一个新的',
     'people_add_firstname' => '名字',
-    'people_add_middlename' => 'Middle name (optional)',
+    'people_add_middlename' => '中间名（可选）',
     'people_add_lastname' => '姓氏（选填）',
     'people_add_email' => '邮箱（选填）',
     'people_add_nickname' => '昵称（选填）',
@@ -58,13 +58,13 @@ return [
     'people_add_gender' => '性别',
     'people_delete_success' => '联系人已被删除',
     'people_delete_message' => '删除联系人',
-    'people_delete_confirmation' => 'Are you sure you want to delete :name’s contact? Deletion is immediate and permanent.',
+    'people_delete_confirmation' => '确实要删除 :name 的联系人吗？删除将立即生效且无法恢复。',
     'people_add_birthday_reminder' => '祝 :name 生日快乐',
     'people_add_birthday_reminder_deceased' => 'On this date, :name would have celebrated their birthday',
     'people_add_import' => '是否要 <a href=":url">导入您的联系人</a>？',
     'people_edit_email_error' => '您的联系人中已经有人使用此电子邮件，请更换一个',
     'people_export' => '导出为 vCard',
-    'people_add_reminder_for_birthday' => 'Create an annual birthday reminder',
+    'people_add_reminder_for_birthday' => '创建年度生日提醒',
 
     // show
     'section_contact_information' => '联系人信息',
@@ -90,6 +90,7 @@ return [
     // Stay in touch
     'stay_in_touch' => '常联系*',
     'stay_in_touch_frequency' => '常联系*提醒频率：每天|常联系*提醒频率：每 {count} 天',
+    'stay_in_touch_next_date' => 'Next due: {date}',
     'stay_in_touch_invalid' => '频率必须大于0。',
     'stay_in_touch_premium' => '您需要升级到高级账户来使用这个功能！',
     'stay_in_touch_modal_title' => '常联系*',
@@ -114,7 +115,7 @@ return [
     'call_emotions' => '情绪：',
 
     // Conversation
-    'conversation_blank' => 'Record conversations you have with :name on social media, SMS…',
+    'conversation_blank' => '记录你和 :name 在社交媒体或 SMS 等平台的对话。',
     'conversation_delete_link' => '删除对话',
     'conversation_edit_title' => '编辑对话',
     'conversation_edit_delete' => '您是否要删除这个对话？操作无法撤销。',
@@ -136,13 +137,14 @@ return [
     'conversation_list_cta' => '记录对话',
 
     // age - birthday
-    'birthdate_not_set' => 'Birthday is not set',
+    'birthdate_not_set' => '未设置生日',
     'age_approximate_in_years' => '大概:age岁',
     'age_exact_in_years' => ':age岁',
     'age_exact_birthdate' => '出生:date',
 
     // Last called
     'last_called' => '最近通话: :date',
+    'last_talked_to' => '最近通话：{date}',
     'last_called_empty' => '最近通话: 未知',
     'last_activity_date' => '最近一起的活动: :date',
     'last_activity_date_empty' => '最近一起的活动: 未知',
@@ -153,12 +155,12 @@ return [
     'information_edit_max_size' => '最大值 :size Kb',
     'information_edit_max_size2' => '最大 {size} Kb',
     'information_edit_firstname' => '名字',
-    'information_edit_lastname' => 'Last name (optional)',
+    'information_edit_lastname' => '姓（可选）',
     'information_edit_description' => 'Description (optional)',
     'information_edit_description_help' => '用于在联系人列表中添加一些元素（如有必要）',
     'information_edit_unknown' => '我不知道具体年龄',
     'information_edit_probably' => 'This person is probably…',
-    'information_edit_not_year' => 'I know the day and month of this person’s birthday, but not the year…',
+    'information_edit_not_year' => '我知道他/她生日的月日, 但不知是哪一年。',
     'information_edit_exact' => '我知道这个人确切的生日…',
     'information_edit_birthdate_label' => '生日',
     'information_no_work_defined' => '未定义工作信息',
@@ -217,7 +219,7 @@ return [
     'relationship_form_add' => '添加一个新的关系',
     'relationship_form_edit' => '修改一个已有关系',
     'relationship_form_is_with' => 'This person is…',
-    'relationship_form_is_with_name' => ':name is…',
+    'relationship_form_is_with_name' => ':name 是...',
     'relationship_form_add_choice' => '这是与谁的关系？',
     'relationship_form_create_contact' => '添加一个新的人',
     'relationship_form_associate_contact' => '导入一位已存在的联系人',
@@ -285,7 +287,7 @@ return [
     'activities_profile_year_summary_activity_types' => ':year年活动类型汇总',
     'activities_profile_year_summary' => ':year年你们一起进行的活动',
     'activities_profile_number_occurences' => ':value 次活动',
-    'activities_list_participants' => '参与者：',
+    'activities_list_participants' => 'Participants ({total}):',
     'activities_list_emotions' => '我感觉:',
     'activities_list_date' => '发生于',
     'activities_list_category' => '分类：',
@@ -421,7 +423,7 @@ return [
 
     // life events
     'life_event_list_tab_life_events' => '生活事件',
-    'life_event_list_tab_other' => 'Notes, reminders, …',
+    'life_event_list_tab_other' => '便签，提醒...',
     'life_event_list_title' => '生活事件',
     'life_event_blank' => '记录在{name} 身上发生的事情以供将来参考',
     'life_event_list_cta' => '添加生活事件',
@@ -429,7 +431,7 @@ return [
     'life_event_create_life_event' => '添加生活事件',
     'life_event_create_default_title' => '标题 (可选)',
     'life_event_create_default_story' => '故事 (可选)',
-    'life_event_create_date' => 'You do not need to indicate a month or a day – only the year is mandatory.',
+    'life_event_create_date' => '只需要提供年份就可以-日与月不是必填项。',
     'life_event_create_default_description' => '添加你知道的信息',
     'life_event_create_add_yearly_reminder' => '为该事件添加年度提醒',
     'life_event_create_success' => '生活事件添加成功',
@@ -437,11 +439,11 @@ return [
     'life_event_delete_description' => '确实要删除此生活事件吗？删除是永久性的。',
     'life_event_delete_success' => '事件已删除',
     'life_event_date_it_happened' => '发生日期',
-    'life_event_category_work_education' => 'Work & education',
-    'life_event_category_family_relationships' => 'Family & relationships',
-    'life_event_category_home_living' => 'Home & living',
-    'life_event_category_health_wellness' => 'Health & wellness',
-    'life_event_category_travel_experiences' => 'Travel & experiences',
+    'life_event_category_work_education' => '工作与教育',
+    'life_event_category_family_relationships' => '家庭与恋爱',
+    'life_event_category_home_living' => '生活日常',
+    'life_event_category_health_wellness' => '健身',
+    'life_event_category_travel_experiences' => '旅行与经历',
     'life_event_sentence_new_job' => '开始了新的工作',
     'life_event_sentence_retirement' => '退休',
     'life_event_sentence_new_school' => '开始上学',
@@ -491,7 +493,7 @@ return [
     'document_list_cta' => '上载文档',
     'document_list_blank_desc' => '在这里, 您可以存储与此人相关的文档。',
     'document_upload_zone_cta' => '上传文件',
-    'document_upload_zone_progress' => 'Uploading the document…',
+    'document_upload_zone_progress' => '正在上传文档...',
     'document_upload_zone_error' => '上传文件时出错，请再试一次 ！',
 
     // Photos
@@ -501,10 +503,10 @@ return [
     'photo_list_blank_desc' => '您可以存储有关此联系人的图像。立即上传一个!',
     'photo_upload_zone_cta' => '上传照片',
     'photo_current_profile_pic' => '目前头像',
-    'photo_make_profile_pic' => '制作头像',
+    'photo_make_profile_pic' => '设为头像',
     'photo_delete' => '删除照片',
-    'photo_next' => 'Next photo ❯',
-    'photo_previous' => '❮ Previous photo',
+    'photo_next' => '下一张照片 ❯',
+    'photo_previous' => '❮ 上一张照片',
 
     // Avatars
     'avatar_change_title' => '更换头像',
@@ -514,7 +516,7 @@ return [
     'avatar_gravatar' => '此用户的电子邮件地址 与Gravatar关联 。 <a href="https://gravatar.com/">Gravatar</a> 是全球通用的头像服务。',
     'avatar_current' => '保持当前头像',
     'avatar_photo' => '从您上传的照片',
-    'avatar_crop_new_avatar_photo' => 'Crop new avatar photo',
+    'avatar_crop_new_avatar_photo' => '裁剪新头像照片',
 
     // emotions
     'emotion_this_made_me_feel' => '这让你觉得...',

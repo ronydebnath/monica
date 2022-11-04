@@ -15,17 +15,18 @@ class Module extends Model
     /**
      * The attributes that aren't mass assignable.
      *
-     * @var array
+     * @var array<string>|bool
      */
     protected $guarded = ['id'];
 
     /**
      * The attributes that should be cast to native types.
      *
-     * @var array
+     * @var array<string, string>
      */
     protected $casts = [
         'active' => 'boolean',
+        'delible' => 'boolean',
     ];
 
     /**
@@ -41,7 +42,7 @@ class Module extends Model
     /**
      * Scope a query to only include modules that are active.
      *
-     * @param  \Illuminate\Database\Eloquent\Builder $query
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopeActive($query)

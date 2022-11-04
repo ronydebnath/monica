@@ -91,11 +91,11 @@
         @if (! $contact->isMe())
         <li class="mb2 mb0-ns dn di-ns tc {{ htmldir() == 'ltr' ? 'mr3-ns' : 'ml3-ns' }}">
           <span class="{{ htmldir() == 'ltr' ? 'mr1' : 'ml1' }}">@include('partials.icons.header_call')</span>
-          @if (is_null($contact->last_talked_to))
-            {{ trans('people.last_called_empty') }}
-          @else
-            {{ trans('people.last_called', ['date' => \App\Helpers\DateHelper::getShortDate($contact->last_talked_to)]) }}
-          @endif
+          <last-called hash="{{ $contact->hashID() }}"
+                       initial-value="{{ is_null($contact->last_talked_to) ? null : \App\Helpers\DateHelper::getShortDate($contact->last_talked_to) }}"
+                       ref="lastCalledAttribute"
+          >
+          </last-called>
         </li>
         @endif
 
@@ -111,7 +111,7 @@
         @if(!$contact->is_dead && ! $contact->isMe())
           <li class="mb2 mb0-ns di-ns db tc {{ htmldir() == 'ltr' ? 'mr3-ns' : 'ml3-ns' }}">
             @include('partials.icons.header_stayintouch')
-            <stay-in-touch :contact="{{ $contact }}" hash="{{ $contact->hashID() }}" :limited="{{ \Safe\json_encode($accountHasLimitations) }}"></stay-in-touch>
+            <stay-in-touch :first-name="'{{ $contact->first_name }}'" :frequency="{{ $contact->stay_in_touch_frequency ?? 'null' }}" :trigger-date="'{{ $contact->stay_in_touch_trigger_date !== null ? \App\Helpers\DateHelper::getTimestamp($contact->stay_in_touch_trigger_date) : null }}'" hash="{{ $contact->hashID() }}" :limited="{{ \Safe\json_encode($accountHasLimitations) }}"></stay-in-touch>
           </li>
         @endif
       </ul>

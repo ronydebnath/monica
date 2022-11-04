@@ -3,6 +3,7 @@
 namespace App\Helpers;
 
 use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
 use Matriphe\ISO639\ISO639;
 use function Safe\preg_match;
 use function Safe\preg_split;
@@ -35,7 +36,7 @@ class LocaleHelper
     /**
      * Get the current lang from locale.
      *
-     * @return string  lang, lowercase form.
+     * @return string lang, lowercase form.
      */
     public static function getLang($locale = null)
     {
@@ -52,7 +53,7 @@ class LocaleHelper
     /**
      * Get the current country from locale.
      *
-     * @return string  country, uppercase form.
+     * @return string country, uppercase form.
      */
     public static function getCountry($locale = null)
     {
@@ -60,7 +61,7 @@ class LocaleHelper
 
         if (is_null($countryCode)) {
             $country = CountriesHelper::getCountryFromLocale($locale);
-            $countryCode = $country->cca2;
+            $countryCode = $country->getIsoAlpha2();
         }
 
         return mb_strtoupper($countryCode);
@@ -70,7 +71,7 @@ class LocaleHelper
      * Extract the current country from locale, i.e. 'en-US' will return 'US'.
      * If no country is present in the locale, it will return null.
      *
-     * @return string|null  country, uppercase form.
+     * @return string|null country, uppercase form.
      */
     public static function extractCountry($locale = null): ?string
     {
@@ -93,7 +94,7 @@ class LocaleHelper
      */
     public static function getLocaleList()
     {
-        return collect(config('lang-detector.languages'))->map(function ($lang) {
+        return collect(config('lang-detector.languages'))->map(function (string $lang): array {
             return [
                 'lang' => $lang,
                 'name' => self::getLocaleName($lang),
@@ -105,9 +106,8 @@ class LocaleHelper
     /**
      * Get the name of one language.
      *
-     * @param string $lang
-     * @param string $locale
-     *
+     * @param  string  $lang
+     * @param  string  $locale
      * @return string
      */
     private static function getLocaleName($lang, $locale = null): string
@@ -118,7 +118,7 @@ class LocaleHelper
             $name = $lang;
         }
 
-        return $name;
+        return (string) Str::of($name);
     }
 
     /**
@@ -159,7 +159,7 @@ class LocaleHelper
     /**
      * Get ISO-639-2/t (three-letter codes) from ISO-639-1 (two-letters code).
      *
-     * @param  string $locale
+     * @param  string  $locale
      * @return string
      */
     public static function getLocaleAlpha($locale)
@@ -184,9 +184,9 @@ class LocaleHelper
     /**
      * Format phone number by country.
      *
-     * @param string $tel
-     * @param string|null $iso
-     * @param int $format
+     * @param  string  $tel
+     * @param  string|null  $iso
+     * @param  int  $format
      * @return string
      */
     public static function formatTelephoneNumberByISO(string $tel, $iso, int $format = PhoneNumberFormat::INTERNATIONAL): string

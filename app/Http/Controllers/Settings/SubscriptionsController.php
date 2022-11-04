@@ -16,7 +16,6 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Contracts\View\Factory;
 use Stripe\Exception\ApiErrorException;
-use Stripe\PaymentIntent as StripePaymentIntent;
 use Laravel\Cashier\Exceptions\IncompletePayment;
 use App\Services\Account\Settings\ArchiveAllContacts;
 
@@ -51,7 +50,7 @@ class SubscriptionsController extends Controller
         }
 
         try {
-            $planInformation = $this->stripeCall(function () use ($subscription) {
+            $planInformation = $this->stripeCall(function () use ($subscription): ?array {
                 return InstanceHelper::getPlanInformationFromSubscription($subscription);
             });
         } catch (StripeException $e) {
@@ -70,7 +69,7 @@ class SubscriptionsController extends Controller
     /**
      * Display the upgrade view page.
      *
-     * @param Request $request
+     * @param  Request  $request
      * @return View|Factory|RedirectResponse
      */
     public function upgrade(Request $request)
@@ -104,7 +103,7 @@ class SubscriptionsController extends Controller
     /**
      * Display the update view page.
      *
-     * @param Request $request
+     * @param  Request  $request
      * @return View|Factory|RedirectResponse
      */
     public function update(Request $request)
@@ -150,7 +149,7 @@ class SubscriptionsController extends Controller
     /**
      * Process the update process.
      *
-     * @param Request $request
+     * @param  Request  $request
      * @return View|Factory|RedirectResponse
      */
     public function processUpdate(Request $request)
@@ -177,13 +176,14 @@ class SubscriptionsController extends Controller
      * Display the confirm view page.
      *
      * @return View|Factory|RedirectResponse
+     *
      * @throws ApiErrorException
      */
     public function confirmPayment($id)
     {
         try {
-            $payment = $this->stripeCall(function () use ($id) {
-                return StripePaymentIntent::retrieve($id, Cashier::stripeOptions());
+            $payment = $this->stripeCall(function () use ($id): \Stripe\PaymentIntent {
+                return Cashier::stripe()->paymentIntents->retrieve($id);
             });
         } catch (StripeException $e) {
             return back()->withErrors($e->getMessage());
@@ -212,7 +212,7 @@ class SubscriptionsController extends Controller
     /**
      * Display the downgrade success page.
      *
-     * @param Request $request
+     * @param  Request  $request
      * @return View|Factory|RedirectResponse
      */
     public function downgradeSuccess(Request $request)
@@ -307,7 +307,7 @@ class SubscriptionsController extends Controller
     /**
      * Process the upgrade payment.
      *
-     * @param Request $request
+     * @param  Request  $request
      * @return RedirectResponse
      */
     public function processPayment(Request $request)
@@ -336,7 +336,7 @@ class SubscriptionsController extends Controller
     /**
      * Download the invoice as PDF.
      *
-     * @param mixed $invoiceId
+     * @param  mixed  $invoiceId
      * @return \Symfony\Component\HttpFoundation\Response
      */
     public function downloadInvoice($invoiceId)
@@ -350,7 +350,7 @@ class SubscriptionsController extends Controller
     /**
      * Download the invoice as PDF.
      *
-     * @param Request $request
+     * @param  Request  $request
      * @return \Illuminate\Http\RedirectResponse|null
      */
     public function forceCompletePaymentOnTesting(Request $request): ?RedirectResponse

@@ -2,25 +2,28 @@
 
 namespace App\Models\Contact;
 
+use App\Traits\HasUuid;
 use App\Models\Account\Account;
 use App\Models\ModelBinding as Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class LifeEvent extends Model
 {
+    use HasUuid;
+
     protected $table = 'life_events';
 
     /**
      * The attributes that aren't mass assignable.
      *
-     * @var array
+     * @var array<string>|bool
      */
     protected $guarded = ['id'];
 
     /**
      * The attributes that are mass assignable.
      *
-     * @var array
+     * @var array<string>
      */
     protected $fillable = [
         'name',
@@ -37,14 +40,14 @@ class LifeEvent extends Model
     /**
      * The attributes that should be mutated to dates.
      *
-     * @var array
+     * @var array<string>
      */
     protected $dates = ['happened_at'];
 
     /**
      * The attributes that should be cast to native types.
      *
-     * @var array
+     * @var array<string, string>
      */
     protected $casts = [
         'happened_at_month_unknown' => 'boolean',

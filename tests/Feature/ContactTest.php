@@ -21,6 +21,7 @@ class ContactTest extends FeatureTestCase
     /**
      * Returns an array containing a user object along with
      * a contact for that user.
+     *
      * @return array
      */
     private function fetchUser()
@@ -507,8 +508,8 @@ class ContactTest extends FeatureTestCase
             'number_of_views' => 0,
         ]);
 
-        $response = $this->get('/people/'.$contact->hashID());
-        $response = $this->get('/people/'.$contact->hashID());
+        $this->get('/people/'.$contact->hashID());
+        $this->get('/people/'.$contact->hashID());
 
         $this->assertDatabaseHas('contacts', [
             'number_of_views' => 2,

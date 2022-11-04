@@ -4,9 +4,14 @@ namespace App\Services\Account\Settings;
 
 use App\Services\BaseService;
 use App\Models\Account\Account;
+use App\Services\QueuableService;
+use App\Services\DispatchableService;
+use App\Services\Contact\Contact\DestroyContact;
 
-class ResetAccount extends BaseService
+class ResetAccount extends BaseService implements QueuableService
 {
+    use DispatchableService;
+
     /**
      * Get the validation rules that apply to the service.
      *
@@ -22,10 +27,10 @@ class ResetAccount extends BaseService
     /**
      * Reset the account.
      *
-     * @param array $data
+     * @param  array  $data
      * @return void
      */
-    public function execute(array $data): void
+    public function handle(array $data): void
     {
         $this->validate($data);
 
@@ -51,7 +56,7 @@ class ResetAccount extends BaseService
     /**
      * Destroy the companies.
      *
-     * @param Account $account
+     * @param  Account  $account
      * @return void
      */
     private function destroyCompanies(Account $account)
@@ -65,7 +70,7 @@ class ResetAccount extends BaseService
     /**
      * Destroy the days.
      *
-     * @param Account $account
+     * @param  Account  $account
      * @return void
      */
     private function destroyDays(Account $account)
@@ -79,7 +84,7 @@ class ResetAccount extends BaseService
     /**
      * Destroy the places.
      *
-     * @param Account $account
+     * @param  Account  $account
      * @return void
      */
     private function destroyPlaces(Account $account)
@@ -93,7 +98,7 @@ class ResetAccount extends BaseService
     /**
      * Destroy the documents.
      *
-     * @param Account $account
+     * @param  Account  $account
      * @return void
      */
     private function destroyDocuments(Account $account)
@@ -106,7 +111,7 @@ class ResetAccount extends BaseService
     /**
      * Destroy the photos.
      *
-     * @param Account $account
+     * @param  Account  $account
      * @return void
      */
     private function destroyPhotos(Account $account)
@@ -120,7 +125,7 @@ class ResetAccount extends BaseService
      * Destroy the journal entries associated with all the contacts of this
      * account.
      *
-     * @param Account $account
+     * @param  Account  $account
      * @return void
      */
     private function destroyJournalEntries(Account $account)
@@ -144,7 +149,7 @@ class ResetAccount extends BaseService
     /**
      * Destroy the import jobs.
      *
-     * @param Account $account
+     * @param  Account  $account
      * @return void
      */
     private function destroyImportJobs(Account $account)
@@ -158,14 +163,18 @@ class ResetAccount extends BaseService
     /**
      * Destroy all the contacts associated with this account.
      *
-     * @param Account $account
+     * @param  Account  $account
      * @return void
      */
     private function destroyContacts(Account $account)
     {
         $contacts = $account->contacts;
         foreach ($contacts as $contact) {
-            $contact->delete();
+            DestroyContact::dispatchSync([
+                'account_id' => $contact->account_id,
+                'contact_id' => $contact->id,
+                'force_delete' => true,
+            ]);
         }
     }
 }

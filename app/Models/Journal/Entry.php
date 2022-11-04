@@ -2,6 +2,7 @@
 
 namespace App\Models\Journal;
 
+use App\Traits\HasUuid;
 use App\Helpers\DateHelper;
 use App\Traits\Journalable;
 use App\Models\Account\Account;
@@ -14,21 +15,21 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  */
 class Entry extends Model implements IsJournalableInterface
 {
-    use Journalable;
+    use Journalable, HasUuid;
 
     protected $table = 'entries';
 
     /**
      * The attributes that aren't mass assignable.
      *
-     * @var array
+     * @var array<string>|bool
      */
     protected $guarded = ['id'];
 
     /**
      * The attributes that are mass assignable.
      *
-     * @var array
+     * @var array<string>
      */
     protected $fillable = [
         'account_id',
@@ -60,6 +61,7 @@ class Entry extends Model implements IsJournalableInterface
 
     /**
      * Get all the information of the Entry for the journal.
+     *
      * @return array
      */
     public function getInfoForJournalEntry()

@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\User\User;
 use App\Helpers\DateHelper;
 use App\Models\Contact\Debt;
 use Illuminate\Http\Request;
@@ -100,6 +99,7 @@ class DashboardController extends Controller
 
     /**
      * Get calls for the dashboard.
+     *
      * @return Collection
      */
     public function calls()
@@ -108,7 +108,7 @@ class DashboardController extends Controller
         $calls = auth()->user()->account->calls()
             ->get()
             ->reject(function ($call) {
-                return is_null($call->contact);
+                return $call->contact === null;
             })
             ->take(15);
 
@@ -127,6 +127,7 @@ class DashboardController extends Controller
 
     /**
      * Get notes for the dashboard.
+     *
      * @return Collection
      */
     public function notes()
@@ -157,6 +158,7 @@ class DashboardController extends Controller
 
     /**
      * Get debts for the dashboard.
+     *
      * @return Collection
      */
     public function debts()

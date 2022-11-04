@@ -11,17 +11,17 @@
 
 ## Prerequisites
 
-Monica can be configured in shared hosting environments with a little differences that we can remedy easily. In this scenerio, Monica depends on the following:
+Monica can be configured in shared hosting environments with a little differences that we can remedy easily. In this scenario, Monica depends on the following:
 
 -   A shared cPanel Server
--   PHP 7.4+
+-   PHP 8.1+
 -   [Composer](https://getcomposer.org/)
 -   [MySQL](https://www.mysql.com/)
 -   SSH Access for an accont on the cPanel server
 
 **Git:** Git should come pre-installed with your server. If it doesn't - use the installation instructions in the link.
 
-**PHP:** Install php7.4 minimum. Generally cPanel will have a PHP 7 version installed, verify unser the 'PHP Version' section from the cPanel section. Make sure these extensions are enabled:
+**PHP:** Install php8.1 minimum. Generally cPanel will have a PHP 7 version installed, verify under the 'PHP Version' section from the cPanel section. Make sure these extensions are enabled:
 
 -   bcmath
 -   curl
@@ -66,14 +66,14 @@ cd /public_html/[subdomain you wish to install monica on]
 git clone https://github.com/monicahq/monica.git
 ```
 
-You should check out a tagged version of Monica since `master` branch may not always be stable. Find the latest official version on the [release page](https://github.com/monicahq/monica/releases).
+You should check out a tagged version of Monica since `main` branch may not always be stable. Find the latest official version on the [release page](https://github.com/monicahq/monica/releases).
 
 ```sh
 cd /var/www/monica
 # Get latest tags from GitHub
 git fetch
 # Clone the desired version
-git checkout tags/v2.18.0
+git checkout tags/v3.7.0
 ```
 
 ### 2. Setup the database
@@ -108,7 +108,7 @@ As the configuration of the application is cached, any update on the `.env` file
 
 ### 4. Configure cron job
 
-Monica requires some background processes to continuously run. The list of things Monica does in the background is described [here](https://github.com/monicahq/monica/blob/master/app/Console/Kernel.php#L63).
+Monica requires some background processes to continuously run. The list of things Monica does in the background is described [here](https://github.com/monicahq/monica/blob/main/app/Console/Kernel.php#L63).
 Basically those crons are needed to send reminder emails and check if a new version is available.
 To do this, setup a cron that runs every minute that triggers the following command `php artisan schedule:run`.
 
@@ -126,7 +126,7 @@ php /var/www/monica/artisan schedule:run >> /dev/null 2>&1
 
 ### 5. Configure cPanel webserver
 
-1. Navigat to the 'Subdomain' section in the cPanel GUI:
+1. Navigate to the 'Subdomain' section in the cPanel GUI:
 
 
 2. Update the path of the domain you wish to assign to Monica to the following:

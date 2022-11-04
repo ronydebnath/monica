@@ -4,8 +4,6 @@ namespace App\Services\Account\Settings;
 
 use App\Models\Account\Photo;
 use App\Services\BaseService;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Contracts\Filesystem\FileNotFoundException;
 
 class DestroyAllPhotos extends BaseService
 {
@@ -24,7 +22,7 @@ class DestroyAllPhotos extends BaseService
     /**
      * Destroy all photos in an account.
      *
-     * @param array $data
+     * @param  array  $data
      * @return bool
      */
     public function execute(array $data): bool
@@ -35,12 +33,6 @@ class DestroyAllPhotos extends BaseService
             ->get();
 
         foreach ($photos as $photo) {
-            try {
-                Storage::delete($photo->new_filename);
-            } catch (FileNotFoundException $e) {
-                continue;
-            }
-
             $photo->delete();
         }
 

@@ -38,32 +38,38 @@ class Kernel extends ConsoleKernel
      *
      * @param  \Illuminate\Console\Scheduling\Schedule  $schedule
      * @return void
+     * @codeCoverageIgnore
      */
     protected function schedule(Schedule $schedule)
     {
+        $this->scheduleCommand($schedule, 'queue:prune-batches', 'daily');
         $this->scheduleCommand($schedule, 'send:reminders', 'hourly');
         $this->scheduleCommand($schedule, 'send:stay_in_touch', 'hourly');
+        $this->scheduleCommand($schedule, 'monica:davclients', 'hourly');
         $this->scheduleCommand($schedule, 'monica:calculatestatistics', 'daily');
         $this->scheduleCommand($schedule, 'monica:ping', 'daily');
         $this->scheduleCommand($schedule, 'monica:clean', 'daily');
         $this->scheduleCommand($schedule, 'monica:updategravatars', 'weekly');
-        if (config('trustedproxy.cloudflare')) {
-            $this->scheduleCommand($schedule, 'cloudflare:reload', 'daily'); // @codeCoverageIgnore
+        if (config('app.cloudflare')) {
+            $this->scheduleCommand($schedule, 'cloudflare:reload', 'daily');
         }
+        $this->scheduleCommand($schedule, 'model:prune', 'daily');
     }
 
     /**
      * Define a new schedule command with a frequency.
+     *
+     * @codeCoverageIgnore
      */
     private function scheduleCommand(Schedule $schedule, string $command, $frequency)
     {
         $schedule->command($command)->when(function () use ($command, $frequency) {
-            $event = CronEvent::command($command); // @codeCoverageIgnore
-            if ($frequency) { // @codeCoverageIgnore
-                $event = $event->$frequency(); // @codeCoverageIgnore
+            $event = CronEvent::command($command);
+            if ($frequency) {
+                $event = $event->$frequency();
             }
 
-            return $event->isDue(); // @codeCoverageIgnore
+            return $event->isDue();
         });
     }
 }

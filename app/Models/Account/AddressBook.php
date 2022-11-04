@@ -2,20 +2,24 @@
 
 namespace App\Models\Account;
 
+use App\Traits\HasUuid;
 use App\Models\User\User;
 use App\Models\Contact\Contact;
 use App\Models\ModelBinding as Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class AddressBook extends Model
 {
+    use HasFactory, HasUuid;
+
     protected $table = 'addressbooks';
 
     /**
      * The attributes that are mass assignable.
      *
-     * @var array
+     * @var array<string>
      */
     protected $fillable = [
         'account_id',
@@ -27,14 +31,14 @@ class AddressBook extends Model
     /**
      * The attributes that aren't mass assignable.
      *
-     * @var array
+     * @var array<string>|bool
      */
     protected $guarded = ['id'];
 
     /**
      * The attributes that should be cast to native types.
      *
-     * @var array
+     * @var array<string, string>
      */
     protected $casts = [
     ];

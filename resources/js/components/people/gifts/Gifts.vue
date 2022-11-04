@@ -17,6 +17,7 @@
 
     <template v-if="displayCreateGift">
       <create-gift
+        :hash="hash"
         :contact-id="contactId"
         :family-contacts="familyContacts"
         :reach-limit="reachLimit"
@@ -29,21 +30,21 @@
     <div>
       <ul class="mb3">
         <li class="di">
-          <p class="di pointer" :class="[activeTab == 'idea' ? 'b' : 'black-50', dirltr ? 'mr3' : 'ml3']"
+          <p class="di pointer" :class="[activeTab === 'idea' ? 'b' : 'black-50', dirltr ? 'mr3' : 'ml3']"
              @click.prevent="setActiveTab('idea')"
           >
             {{ $t('people.gifts_ideas') }} ({{ ideas.length }})
           </p>
         </li>
         <li class="di">
-          <p class="di pointer" :class="[activeTab == 'offered' ? 'b' : 'black-50', dirltr ? 'mr3' : 'ml3']"
+          <p class="di pointer" :class="[activeTab === 'offered' ? 'b' : 'black-50', dirltr ? 'mr3' : 'ml3']"
              @click.prevent="setActiveTab('offered')"
           >
             {{ $t('people.gifts_offered') }} ({{ offered.length }})
           </p>
         </li>
         <li class="di">
-          <p class="di pointer" :class="[activeTab == 'received' ? 'b' : 'black-50', dirltr ? 'mr3' : 'ml3']"
+          <p class="di pointer" :class="[activeTab === 'received' ? 'b' : 'black-50', dirltr ? 'mr3' : 'ml3']"
              @click.prevent="setActiveTab('received')"
           >
             {{ $t('people.gifts_received') }} ({{ received.length }})
@@ -57,10 +58,10 @@
               @update="($event) => { updateList($event) }"
         >
           <div :class="dirltr ? 'fl' : 'fr'">
-            <a v-if="gift.status == 'idea'" class="di" href="" @click.prevent="toggle(gift)">
+            <a v-if="gift.status === 'idea'" class="di" href="" @click.prevent="toggle(gift)">
               {{ $t('people.gifts_mark_offered') }}
             </a>
-            <a v-if="gift.status == 'offered'" class="di" href="" @click.prevent="toggle(gift)">
+            <a v-if="gift.status === 'offered'" class="di" href="" @click.prevent="toggle(gift)">
               {{ $t('people.gifts_offered_as_an_idea') }}
             </a>
           </div>
@@ -80,6 +81,7 @@
         </gift>
         <create-gift
           v-else
+          :hash="hash"
           :gift="gift"
           :contact-id="contactId"
           :family-contacts="familyContacts"
@@ -157,24 +159,24 @@ export default {
 
   computed: {
     dirltr() {
-      return this.$root.htmldir == 'ltr';
+      return this.$root.htmldir === 'ltr';
     },
 
     ideas() {
-      return this.gifts.filter(gift => gift.status == 'idea');
+      return this.gifts.filter(gift => gift.status === 'idea');
     },
 
     offered() {
-      return this.gifts.filter(gift => gift.status == 'offered');
+      return this.gifts.filter(gift => gift.status === 'offered');
     },
 
     received() {
-      return this.gifts.filter(gift => gift.status == 'received');
+      return this.gifts.filter(gift => gift.status === 'received');
     },
 
     filteredGifts() {
       const vm = this;
-      return this.gifts.filter(gift => gift.status == vm.activeTab);
+      return this.gifts.filter(gift => gift.status === vm.activeTab);
     },
   },
 
@@ -193,14 +195,14 @@ export default {
     },
 
     getGifts() {
-      axios.get('api/contacts/' + this.contactId + '/gifts')
+      axios.get(`people/${this.hash}/gifts`)
         .then(response => {
           this.gifts = response.data.data;
         });
     },
 
     toggle(gift) {
-      if (gift.status == 'idea') {
+      if (gift.status === 'idea') {
         gift.status = 'offered';
         gift.date = moment().format('YYYY-MM-DD');
       } else {
@@ -208,7 +210,7 @@ export default {
         gift.date = null;
       }
       gift.contact_id = this.contactId;
-      axios.put('api/gifts/' + gift.id, gift)
+      axios.put(`people/${this.hash}/gifts/${gift.id}`, gift)
         .then(response => {
           Vue.set(gift, 'status', response.data.data.status);
           Vue.set(gift, 'date', response.data.data.date);
@@ -221,7 +223,7 @@ export default {
     },
 
     trash(gift) {
-      axios.delete('api/gifts/' + gift.id)
+      axios.delete(`people/${this.hash}/gifts/${gift.id}`)
         .then(response => {
           this.gifts.splice(this.gifts.indexOf(gift), 1);
           this.closeDeleteModal();

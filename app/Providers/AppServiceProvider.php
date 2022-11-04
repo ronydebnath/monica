@@ -57,7 +57,28 @@ class AppServiceProvider extends ServiceProvider
         );
 
         Password::defaults(function () {
-            return Password::min(6);
+            if (! $this->app->environment('production')) {
+                return Password::min(6);
+            }
+            $rules = Password::min(config('app.password_min'));
+            $config = explode(',', config('app.password_rules'));
+            if (in_array('mixedCase', $config)) {
+                $rules = $rules->mixedCase();
+            }
+            if (in_array('letters', $config)) {
+                $rules = $rules->letters();
+            }
+            if (in_array('numbers', $config)) {
+                $rules = $rules->numbers();
+            }
+            if (in_array('symbols', $config)) {
+                $rules = $rules->symbols();
+            }
+            if (in_array('uncompromised', $config)) {
+                $rules = $rules->uncompromised();
+            }
+
+            return $rules;
         });
 
         if (config('database.use_utf8mb4')
@@ -65,6 +86,8 @@ class AppServiceProvider extends ServiceProvider
             && ! DBHelper::testVersion('5.7.7')) {
             Schema::defaultStringLength(191);
         }
+
+        Cashier::useCustomerModel(\App\Models\Account\Account::class);
 
         VerifyEmail::toMailUsing(function ($user, $verificationUrl) {
             return EmailMessaging::verifyEmailMail($user, $verificationUrl);
@@ -86,7 +109,7 @@ class AppServiceProvider extends ServiceProvider
             $url = $request->getRequestUri();
 
             return Cache::rememberForever('etag.'.$url, function () use ($url) {
-                return md5($url);
+                return sha1($url);
             });
         });
     }
@@ -205,7 +228,7 @@ class AppServiceProvider extends ServiceProvider
         \App\Services\VCalendar\ImportTask::class => \App\Services\VCalendar\ImportTask::class,
         \App\Services\VCard\ExportVCard::class => \App\Services\VCard\ExportVCard::class,
         \App\Services\VCard\ImportVCard::class => \App\Services\VCard\ImportVCard::class,
-        \App\Services\Account\Settings\ExportAccount::class => \App\Services\Account\Settings\ExportAccount::class,
+        \App\Services\Account\Settings\SqlExportAccount::class => \App\Services\Account\Settings\SqlExportAccount::class,
         \App\Services\Account\Settings\ResetAccount::class => \App\Services\Account\Settings\ResetAccount::class,
         \App\Services\Account\Settings\DestroyAccount::class => \App\Services\Account\Settings\DestroyAccount::class,
         \App\Services\Instance\AuditLog\LogAccountAction::class => \App\Services\Instance\AuditLog\LogAccountAction::class,

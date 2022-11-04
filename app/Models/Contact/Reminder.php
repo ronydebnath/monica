@@ -3,6 +3,7 @@
 namespace App\Models\Contact;
 
 use Carbon\Carbon;
+use App\Traits\HasUuid;
 use App\Models\User\User;
 use App\Helpers\DateHelper;
 use App\Models\Account\Account;
@@ -20,21 +21,24 @@ use App\Models\ModelBindingHasherWithContact as Model;
  */
 class Reminder extends Model
 {
+    use HasUuid;
+
     /**
      * The attributes that aren't mass assignable.
      *
-     * @var array
+     * @var array<string>|bool
      */
     protected $guarded = ['id'];
 
     /**
      * The attributes that should be cast to native types.
      *
-     * @var array
+     * @var array<string, string>
      */
     protected $casts = [
         'is_birthday' => 'boolean',
         'delible' => 'boolean',
+        'inactive' => 'boolean',
         'initial_date' => 'date:Y-m-d',
     ];
 
@@ -80,12 +84,23 @@ class Reminder extends Model
     /**
      * Scope a query to only include active reminders.
      *
-     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopeActive($query)
     {
         return $query->where('inactive', false);
+    }
+
+    /**
+     * Test if this reminder is the contact's birthday reminder.
+     *
+     * @return bool
+     */
+    public function isBirthdayReminder(): bool
+    {
+        return $this->contact !== null
+            && $this->contact->birthday_reminder_id === $this->id;
     }
 
     /**
@@ -127,7 +142,7 @@ class Reminder extends Model
     /**
      * Schedule the reminder to be sent.
      *
-     * @param User $user
+     * @param  User  $user
      * @return void
      */
     public function schedule(User $user)
@@ -154,8 +169,8 @@ class Reminder extends Model
      * Create all the notifications that are supposed to be sent
      * 30 and 7 days prior to the actual reminder.
      *
-     * @param Carbon $triggerDate
-     * @param User $user
+     * @param  Carbon  $triggerDate
+     * @param  User  $user
      * @return void
      */
     public function scheduleNotifications(Carbon $triggerDate, User $user)
@@ -164,8 +179,8 @@ class Reminder extends Model
         $reminderRules = $this->account->reminderRules()->where('active', 1)->get();
 
         foreach ($reminderRules as $reminderRule) {
-            $datePrior = Carbon::createFromFormat('Y-m-d', $date);
-            $datePrior->subDays($reminderRule->number_of_days_before);
+            $datePrior = Carbon::createFromFormat('Y-m-d', $date)
+                ->subDays($reminderRule->number_of_days_before);
 
             if ($datePrior->lessThanOrEqualTo(now())) {
                 continue;

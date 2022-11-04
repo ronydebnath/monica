@@ -2,30 +2,33 @@
 
 namespace App\Models\Contact;
 
+use App\Traits\HasUuid;
 use App\Models\Account\Account;
 use App\Models\ModelBindingHasher as Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Message extends Model
 {
+    use HasUuid;
+
     /**
      * The attributes that aren't mass assignable.
      *
-     * @var array
+     * @var array<string>|bool
      */
     protected $guarded = ['id'];
 
     /**
      * The attributes that should be mutated to dates.
      *
-     * @var array
+     * @var array<string>
      */
     protected $dates = ['written_at'];
 
     /**
      * The attributes that should be cast to native types.
      *
-     * @var array
+     * @var array<string, string>
      */
     protected $casts = [
         'written_by_me' => 'boolean',

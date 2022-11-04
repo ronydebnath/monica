@@ -2,7 +2,7 @@
 
 Monica can be deployed on Heroku using the button below:
 
-[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/monicahq/monica/tree/master)
+[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/monicahq/monica/tree/main)
 
 - [Installation](#installation)
   - [Configuration](#configuration)
@@ -19,7 +19,7 @@ Before deployment, Heroku will ask you to define a few variables.
 - In addition, you can edit the email address Monica will send emails to (`MAIL_FROM_ADDRESS`), the name of the sender (`MAIL_FROM_NAME`), where emails should link to (`APP_URL`) and some other important variables on that screen.
 
 After deployment, click on ![Manage App](../../images/heroku_manage_app.png) to open the dashboard of your new application:
-![Heroku Dashbord](../../images/heroku_dashboard.png)
+![Heroku Dashboard](../../images/heroku_dashboard.png)
 
 Click on **Heroku Scheduler** to open scheduler dashboard. Create a new job, and define a new job to run this command every 10 minutes or every hour at 00 minutes:
 ```sh
@@ -35,7 +35,7 @@ Monica doesn't require a lot of power - it will run perfectly fine on the free p
 
 After deployment, the configuration of your app should look like this:
 
-![picture of configuration](https://raw.githubusercontent.com/monicahq/monica/master/docs/images/heroku_dashboard-resources.png)
+![picture of configuration](https://raw.githubusercontent.com/monicahq/monica/main/docs/images/heroku_dashboard-resources.png)
 
 Note that when you deploy with the "Deploy to Heroku" purple button, only 1 dyno ("web") is activated while the "queue" one is not. That is OK - the "queue" dyno is only helpful if you set `QUEUE_CONNECTION=database` (default is 'sync').
 
@@ -124,9 +124,9 @@ Client secret: zsfOHGnEbadlBP8kLsjOV8hMpHAxb0oAhenfmSqq
 
 You can update your Monica instance to the latest version by cloning the repository and pushing it to Heroku git.
 
-Clone the Monica repository to your local environment by `git clone https://github.com/monicahq/monica`, and add heroku git repository by `heroku git:remote -a (heroku app name)`. Then, push to heroku by `git push heroku master`. Heroku will build and update the repository, automatically.
+Clone the Monica repository to your local environment by `git clone https://github.com/monicahq/monica`, and add heroku git repository by `heroku git:remote -a (heroku app name)`. Then, push to heroku by `git push heroku main:master`. Heroku will build and update the repository, automatically.
 
-See more information about updating Monica (including Heroku-spcific things) [here](https://github.com/monicahq/monica/blob/master/docs/installation/update.md).
+See more information about updating Monica (including Heroku-specific things) [here](https://github.com/monicahq/monica/blob/main/docs/installation/update.md).
 
 
 ## Update from 2.x to 3.x

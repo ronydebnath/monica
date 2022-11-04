@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use function Safe\exec;
 use function Safe\mkdir;
 use Illuminate\Console\Command;
 use function Safe\file_put_contents;
@@ -53,15 +54,6 @@ class SentryRelease extends Command
     private const SENTRY_URL = 'https://sentry.io/get-cli/';
 
     /**
-     * Create a new command.
-     */
-    public function __construct()
-    {
-        $this->install_dir = env('SENTRY_ROOT', getenv('HOME').'/.local/bin');
-        parent::__construct();
-    }
-
-    /**
      * Execute the console command.
      *
      * @return mixed
@@ -73,6 +65,8 @@ class SentryRelease extends Command
         }
 
         if ($this->confirmToProceed()) {
+            $this->install_dir = env('SENTRY_ROOT', getenv('HOME').'/.local/bin');
+
             $release = $this->option('release') ?? config('sentry.release');
             $commit = $this->option('commit') ??
                     (is_dir(__DIR__.'/../../../.git') ? trim(exec('git log --pretty="%H" -n1 HEAD')) : $release);

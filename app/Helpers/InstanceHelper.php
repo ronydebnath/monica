@@ -2,6 +2,7 @@
 
 namespace App\Helpers;
 
+use Carbon\Carbon;
 use function Safe\json_decode;
 use App\Models\Account\Account;
 use App\Models\Instance\Instance;
@@ -24,7 +25,7 @@ class InstanceHelper
     /**
      * Get the plan information for the given time period.
      *
-     * @param  string $timePeriod  Accepted values: 'monthly', 'annual'
+     * @param  string  $timePeriod  Accepted values: 'monthly', 'annual'
      * @return array|null
      */
     public static function getPlanInformationFromConfig(string $timePeriod): ?array
@@ -50,7 +51,7 @@ class InstanceHelper
     /**
      * Get the plan information for the given time period.
      *
-     * @param  \Laravel\Cashier\Subscription $subscription
+     * @param  \Laravel\Cashier\Subscription  $subscription
      * @return array|null
      */
     public static function getPlanInformationFromSubscription(\Laravel\Cashier\Subscription $subscription): ?array
@@ -65,7 +66,7 @@ class InstanceHelper
 
         if (is_null($stripeSubscription) || is_null($plan)) {
             return [
-                'type' => $subscription->stripe_plan,
+                'type' => $subscription->stripe_price,
                 'name' => $subscription->name,
                 'id' => $subscription->stripe_id,
                 'price' => '?',
@@ -83,14 +84,14 @@ class InstanceHelper
             'id' => $plan->id,
             'price' => $plan->amount,
             'friendlyPrice' => $amount,
-            'nextBillingDate' => DateHelper::getFullDate($stripeSubscription->current_period_end),
+            'nextBillingDate' => DateHelper::getFullDate(Carbon::createFromTimestamp($stripeSubscription->current_period_end)),
         ];
     }
 
     /**
      * Get changelogs entries.
      *
-     * @param int $limit
+     * @param  int  $limit
      * @return array
      */
     public static function getChangelogEntries($limit = null)

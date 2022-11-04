@@ -3,7 +3,7 @@
 First off, thank you for considering contributing to Monica. We need people like
 you to make Monica the best tool it can be.
 
-Before you do anything else, please read the [README.md](readme.md) of this project first.
+Before you do anything else, please read the [README.md](README.md) of this project first.
 This is where we highlight the vision and the strategy. Please make sure you
 accept this vision before contributing to this project.
 
@@ -30,7 +30,7 @@ git checkout -b 325-add-japanese-translations
 
 ### 3. Get the test suite running
 
-Make sure you follow the [instructions](https://github.com/monicahq/monica/blob/master/docs/contribute/readme.md#testing-environment)
+Make sure you follow the [instructions](https://github.com/monicahq/monica/blob/main/docs/contribute/readme.md#testing-environment)
 on how to setup the test suite.
 
 ### 4. Did you find a bug?
@@ -51,11 +51,14 @@ everyone is a beginner at first :smile_cat:
 * Write a good commit message. To write good commit messages, please follow
 [those recommendations](http://tbaggery.com/2008/04/19/a-note-about-git-commit-messages.html).
 There are important to maintain an healthy commit logs.
+* We follow [conventionalcommits](https://www.conventionalcommits.org/en/v1.0.0/)
+guideline in our Pull Request title. Please follow it: use the `feat` type
+for new features pull request, and `fix` type to fix a bug.
 * If there are multiple commits in your pull request, these commits will be
 squashed before merging. Please make sure, if that's the case, that your pull
 request has a nice description explaining what it does.
-* It's okay to have work-in-progress pull requests. Add `[WIP]` in the title of
-your pull request if that's the case, otherwise your pull request will be
+* It's okay to have work-in-progress pull requests. Create a `draft` pull request
+if that's the case, otherwise your pull request will be
 considered in a state of being able to be merged as is.
 * If you wish to appear as a contributor, update the CONTRIBUTORS file and
 add your name to it. Include this change in your pull request.

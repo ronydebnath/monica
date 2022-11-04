@@ -4,12 +4,16 @@ namespace App\Http\Controllers\Contacts;
 
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use App\Helpers\AccountHelper;
 use App\Models\Contact\Contact;
 use App\Models\Account\Activity;
 use Illuminate\Support\Collection;
 use App\Http\Controllers\Controller;
 use App\Models\Account\ActivityType;
 use App\Traits\JsonRespondController;
+use App\Services\Account\Activity\Activity\CreateActivity;
+use App\Services\Account\Activity\Activity\UpdateActivity;
+use App\Services\Account\Activity\Activity\DestroyActivity;
 use App\Services\Account\Activity\ActivityStatisticService;
 use App\Http\Resources\Activity\Activity as ActivityResource;
 
@@ -18,22 +22,10 @@ class ActivitiesController extends Controller
     use JsonRespondController;
 
     /**
-     * Statistics about an activity.
-     *
-     * @var ActivityStatisticService
-     */
-    protected $activityStatisticService;
-
-    public function __construct(ActivityStatisticService $service)
-    {
-        $this->activityStatisticService = $service;
-    }
-
-    /**
      * Get the list of activities.
      *
-     * @param Request $request
-     * @param Contact $contact
+     * @param  Request  $request
+     * @param  Contact  $contact
      * @return \Illuminate\Http\Resources\Json\ResourceCollection
      */
     public function index(Request $request, Contact $contact)
@@ -43,7 +35,9 @@ class ActivitiesController extends Controller
                             ->limit(10)
                             ->get();
 
-        return ActivityResource::collection($activities);
+        return ActivityResource::collection($activities)->additional(['meta' => [
+            'statistics' => AccountHelper::getYearlyActivitiesStatistics($contact->account),
+        ]]);
     }
 
     /**
@@ -55,8 +49,8 @@ class ActivitiesController extends Controller
      * necessary information.
      * Also we need to filter out the current contact from the list.
      *
-     * @param Request $request
-     * @param Contact $contact
+     * @param  Request  $request
+     * @param  Contact  $contact
      * @return Collection
      */
     public function contacts(Request $request, Contact $contact)
@@ -65,7 +59,7 @@ class ActivitiesController extends Controller
             ->filter(function ($c) use ($contact) {
                 return $contact->id !== $c->id;
             })
-            ->map(function ($c) {
+            ->map(function (Contact $c): array {
                 return [
                     'id' => $c->id,
                     'name' => $c->name,
@@ -76,7 +70,7 @@ class ActivitiesController extends Controller
     /**
      * Get the list of activity categories.
      *
-     * @param Request $request
+     * @param  Request  $request
      * @return Collection
      */
     public function categories(Request $request)
@@ -108,8 +102,8 @@ class ActivitiesController extends Controller
     /**
      * Display the summary of activities for a given contact.
      *
-     * @param Request $request
-     * @param Contact $contact
+     * @param  Request  $request
+     * @param  Contact  $contact
      * @return \Illuminate\Http\RedirectResponse
      */
     public function summary(Request $request, Contact $contact)
@@ -126,21 +120,21 @@ class ActivitiesController extends Controller
     /**
      * Get all the activities for this contact for a specific year.
      */
-    public function year(Request $request, Contact $contact, int $year)
+    public function year(ActivityStatisticService $activityStatisticService, Contact $contact, int $year)
     {
         $startDate = Carbon::create($year, 1, 1);
         $endDate = Carbon::create($year, 12, 31);
 
-        $activitiesLastTwelveMonths = $this->activityStatisticService
+        $activitiesLastTwelveMonths = $activityStatisticService
                         ->activitiesWithContactInTimeRange($contact, now()->subMonths(12), now())
                         ->count();
 
-        $uniqueActivityTypes = $this->activityStatisticService
+        $uniqueActivityTypes = $activityStatisticService
                         ->uniqueActivityTypesInTimeRange($contact, $startDate, $endDate);
 
-        $activitiesPerYear = $this->activityStatisticService->activitiesPerYearWithContact($contact);
+        $activitiesPerYear = $activityStatisticService->activitiesPerYearWithContact($contact);
 
-        $activitiesPerMonthForYear = $this->activityStatisticService
+        $activitiesPerMonthForYear = $activityStatisticService
                         ->activitiesPerMonthForYear($contact, $year)
                         ->sortByDesc('month');
 
@@ -152,5 +146,62 @@ class ActivitiesController extends Controller
             ->withActivitiesPerMonthForYear($activitiesPerMonthForYear)
             ->withYear($year)
             ->withContact($contact);
+    }
+
+    /**
+     * Store the activity.
+     *
+     * @param  Request  $request
+     * @return \Illuminate\Contracts\Support\Responsable
+     */
+    public function store(Request $request)
+    {
+        $activity = app(CreateActivity::class)->execute(
+            $request->except(['account_id'])
+                +
+                [
+                    'account_id' => auth()->user()->account_id,
+                ]
+        );
+
+        return new ActivityResource($activity);
+    }
+
+    /**
+     * Update the activity.
+     *
+     * @param  Request  $request
+     * @param  Activity  $activity
+     * @return \Illuminate\Contracts\Support\Responsable
+     */
+    public function update(Request $request, Activity $activity)
+    {
+        $activity = app(UpdateActivity::class)->execute(
+            $request->except(['account_id', 'activity_id'])
+                +
+                [
+                    'account_id' => auth()->user()->account_id,
+                    'activity_id' => $activity->id,
+                ]
+        );
+
+        return new ActivityResource($activity);
+    }
+
+    /**
+     * Delete an activity.
+     *
+     * @param  Request  $request
+     * @param  Activity  $activity
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function destroy(Request $request, Activity $activity)
+    {
+        app(DestroyActivity::class)->execute([
+            'account_id' => auth()->user()->account_id,
+            'activity_id' => $activity->id,
+        ]);
+
+        return $this->respondObjectDeleted($activity->id);
     }
 }

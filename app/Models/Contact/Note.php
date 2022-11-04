@@ -2,6 +2,7 @@
 
 namespace App\Models\Contact;
 
+use App\Traits\HasUuid;
 use App\Helpers\DateHelper;
 use App\Models\Account\Account;
 use Illuminate\Database\Eloquent\Builder;
@@ -18,17 +19,19 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  */
 class Note extends Model
 {
+    use HasUuid;
+
     /**
      * The attributes that aren't mass assignable.
      *
-     * @var array
+     * @var array<string>|bool
      */
     protected $guarded = ['id'];
 
     /**
      * The attributes that should be cast to native types.
      *
-     * @var array
+     * @var array<string, string>
      */
     protected $casts = [
         'is_favorited' => 'boolean',
@@ -41,7 +44,7 @@ class Note extends Model
     /**
      * The attributes that are mass assignable.
      *
-     * @var array
+     * @var array<string>
      */
     protected $fillable = [
         'account_id',
@@ -81,7 +84,7 @@ class Note extends Model
     /**
      * Limit notes to favorited ones.
      *
-     * @param Builder $query
+     * @param  Builder  $query
      * @return Builder
      */
     public function scopeFavorited(Builder $query)

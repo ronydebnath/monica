@@ -3,7 +3,7 @@
 /**
  * ⚠️ Editing not allowed except for 'en' language.
  *
- * @see https://github.com/monicahq/monica/blob/master/docs/contribute/translate.md for translations.
+ * @see https://github.com/monicahq/monica/blob/main/docs/contribute/translate.md for translations.
  */
 
 return [
@@ -45,4 +45,9 @@ return [
     'invitation_link' => '要接受邀请，请点击下面的链接：',
     'invitation_button' => '接受邀请',
     'invitation_expiration' => '此链接将在 :count 天后过期',
+
+    'export_title' => '您的导出已就绪',
+    'export_description' => '您请求的导出内容 :date. 已经可以下载了.',
+    'export_download' => '下载导出内容',
+
 ];

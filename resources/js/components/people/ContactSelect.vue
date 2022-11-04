@@ -5,6 +5,7 @@
     </p>
     <input type="hidden" :name="name" :value="selected ? selected.id : ''" />
     <v-select
+      :id="id ? id : ''"
       :value="selected"
       :placeholder="placeholder"
       :label="'complete_name'"
@@ -28,6 +29,10 @@ export default {
     vSelect
   },
   props: {
+    id: {
+      type: String,
+      default: null,
+    },
     value: {
       type: Object,
       default: null,
@@ -136,13 +141,6 @@ export default {
     search(keyword, loading) {
       this.updateItems(keyword);
     },
-
-    blur(e) {
-      //this.items = this.defaultOptions;
-    },
-
-    focus(e) {
-    }
   }
 };
 </script>
