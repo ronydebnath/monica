@@ -15,6 +15,6 @@ jobs:
 
   vue:
     name: Lint Vue files
-    uses: monicahq/workflows/.github/workflows/lint_vue.yml@v2
+    uses: monicahq/workflows/.github/workflows/lint_vue.yml@v4
     with:
       node-version: 22
